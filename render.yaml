@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: carolina-cocina
+    runtime: static
+    buildCommand: ""
+    staticPublishPath: .
+    pullRequestPreviewsEnabled: false

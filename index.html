@@ -1,0 +1,775 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carolina Cocina — Personal Chef</title>
+<meta name="description" content="Marmitas fitness e jantares personalizados com a Personal Chef Carolina, em Teresópolis, RJ.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Petit+Formal+Script&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #f6f1e6;
+    --bg-alt: #eee5d2;
+    --panel: #fbf8f0;
+    --ink: #2b2a22;
+    --ink-soft: #5c5847;
+    --line: #d9cca9;
+    --olive: #6c7a45;
+    --olive-deep: #454f2c;
+    --olive-tint: #e3e6d3;
+    --terracotta: #bd6d43;
+    --terracotta-deep: #9c5330;
+    --terracotta-tint: #f1ded0;
+    --on-olive: #f6f1e6;
+    --shadow: 0 18px 40px -22px rgba(43,42,34,0.35);
+  }
+
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #1c1a13;
+      --bg-alt: #242017;
+      --panel: #262218;
+      --ink: #f1ead9;
+      --ink-soft: #c7bda3;
+      --line: #4a4530;
+      --olive: #a3b06c;
+      --olive-deep: #cdd8a0;
+      --olive-tint: #333723;
+      --terracotta: #e0966b;
+      --terracotta-deep: #f0b48c;
+      --terracotta-tint: #3a2a20;
+      --on-olive: #21230f;
+      --shadow: 0 18px 40px -20px rgba(0,0,0,0.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg: #1c1a13;
+    --bg-alt: #242017;
+    --panel: #262218;
+    --ink: #f1ead9;
+    --ink-soft: #c7bda3;
+    --line: #4a4530;
+    --olive: #a3b06c;
+    --olive-deep: #cdd8a0;
+    --olive-tint: #333723;
+    --terracotta: #e0966b;
+    --terracotta-deep: #f0b48c;
+    --terracotta-tint: #3a2a20;
+    --on-olive: #21230f;
+    --shadow: 0 18px 40px -20px rgba(0,0,0,0.6);
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Poppins', -apple-system, 'Segoe UI', sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  img{ max-width:100%; display:block; }
+  a{ color: inherit; }
+  h1,h2,h3{
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 600;
+    text-wrap: balance;
+    margin: 0;
+    color: var(--ink);
+  }
+  .script{
+    font-family: 'Petit Formal Script', cursive;
+    font-weight: 400;
+  }
+  .eyebrow{
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--terracotta-deep);
+    font-weight: 600;
+  }
+  .wrap{
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 2.5rem);
+  }
+  .btn{
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.6rem;
+    border-radius: 999px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.92rem;
+    text-decoration: none;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  }
+  .btn:hover{ transform: translateY(-1px); }
+  .btn:focus-visible{ outline: 2px solid var(--terracotta-deep); outline-offset: 3px; }
+  .btn-solid{ background: var(--terracotta); color: #fff8f1; box-shadow: var(--shadow); }
+  .btn-solid:hover{ background: var(--terracotta-deep); }
+  .btn-ghost{ background: transparent; border-color: var(--olive); color: var(--olive-deep); }
+  .btn-ghost:hover{ background: var(--olive-tint); }
+
+  /* ---------- header ---------- */
+  header{
+    position: sticky; top:0; z-index: 40;
+    background: var(--olive-deep);
+    color: var(--on-olive);
+    border-bottom: 1px solid rgba(0,0,0,0.15);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 0.85rem clamp(1.25rem, 4vw, 2.5rem);
+    max-width: 1160px; margin: 0 auto;
+    gap: 1.5rem;
+  }
+  .brandmark{ display:flex; align-items:center; gap:0.6rem; text-decoration:none; color: var(--on-olive); }
+  .brandmark svg{ width: 30px; height:30px; flex:none; }
+  .brandmark-text{ line-height:1.05; }
+  .brandmark-text .name{
+    font-family:'Cormorant Garamond', serif; font-weight:700; font-size:1.28rem;
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .brandmark-text .tag{ font-family:'Petit Formal Script'; font-size:0.95rem; color: var(--terracotta-tint); }
+  nav.links{ display:flex; align-items:center; gap: 1.9rem; }
+  nav.links a{
+    text-decoration:none; font-size:0.9rem; font-weight:500;
+    color: var(--on-olive); opacity:0.82;
+    border-bottom: 2px solid transparent; padding-bottom:2px;
+  }
+  nav.links a:hover{ opacity:1; }
+  nav.links a.active{ opacity:1; border-bottom-color: var(--terracotta); font-weight:600; }
+  .nav-cta{ display:flex; align-items:center; gap:0.9rem; }
+  .nav-toggle{ display:none; background:none; border:none; color:var(--on-olive); cursor:pointer; padding:0.3rem; }
+  .nav-toggle svg{ width:24px; height:24px; }
+
+  @media (max-width: 860px){
+    nav.links{
+      position:absolute; top:100%; left:0; right:0;
+      background: var(--olive-deep);
+      flex-direction:column; align-items:flex-start;
+      padding: 0.5rem clamp(1.25rem,4vw,2.5rem) 1.25rem;
+      gap: 0.9rem;
+      display:none;
+    }
+    nav.links.open{ display:flex; }
+    .nav-toggle{ display:inline-flex; }
+    .nav-cta .btn-label{ display:none; }
+  }
+
+  /* ---------- framed sections (echoes the label border) ---------- */
+  .framed{
+    position:relative;
+    border: 1px solid var(--line);
+    padding: clamp(2.2rem, 5vw, 3.6rem);
+  }
+  .corner{ position:absolute; width:34px; height:34px; }
+  .corner svg{ width:100%; height:100%; }
+  .corner-tl{ top:-1px; left:-1px; }
+  .corner-tr{ top:-1px; right:-1px; transform: scaleX(-1); }
+  .corner-bl{ bottom:-1px; left:-1px; transform: scaleY(-1); }
+  .corner-br{ bottom:-1px; right:-1px; transform: scale(-1,-1); }
+
+  /* ---------- hero ---------- */
+  .hero-outer{ background: var(--bg); padding: clamp(2.5rem, 6vw, 4.5rem) 0 clamp(2rem,5vw,3rem); }
+  .hero{
+    display:grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(2rem, 5vw, 3.5rem);
+    align-items:center;
+  }
+  .hero h1{ font-size: clamp(2.1rem, 4.4vw, 3.35rem); line-height:1.08; margin: 0.5rem 0 1.1rem; }
+  .hero h1 em{ font-style:normal; color: var(--terracotta-deep); }
+  .hero p.lede{ max-width: 46ch; color: var(--ink-soft); font-size:1.04rem; margin-bottom: 1.8rem; }
+  .hero-ctas{ display:flex; flex-wrap:wrap; align-items:center; gap:0.9rem 1.2rem; margin-bottom:1.6rem; }
+  .hero-ctas .text-link{ font-size:0.86rem; color: var(--ink-soft); text-decoration:underline; text-underline-offset:3px; }
+  .hero-meta{ display:flex; flex-wrap:wrap; gap: 1.4rem; font-size:0.85rem; color: var(--ink-soft); }
+  .hero-meta span{ display:flex; align-items:center; gap:0.4rem; }
+  .hero-meta svg{ width:16px; height:16px; color: var(--olive); flex:none; }
+
+  .plate-wrap{ display:flex; justify-content:center; }
+  .plate-wrap svg{ width: min(340px, 100%); height:auto; }
+  @keyframes steam{
+    0%,100%{ transform: translateY(0); opacity:0.55; }
+    50%{ transform: translateY(-6px); opacity:0.95; }
+  }
+  .steam-line{ animation: steam 4.5s ease-in-out infinite; transform-origin:center; }
+  .steam-line:nth-child(2){ animation-delay: 0.7s; }
+  .steam-line:nth-child(3){ animation-delay: 1.4s; }
+  @media (prefers-reduced-motion: reduce){ .steam-line{ animation:none; } }
+
+  /* ---------- sections generic ---------- */
+  section{ padding: clamp(3rem, 6vw, 4.5rem) 0; }
+  .section-head{ max-width: 62ch; margin-bottom: clamp(2rem, 4vw, 2.8rem); }
+  .section-head h2{ font-size: clamp(1.7rem, 3.2vw, 2.35rem); margin-top:0.4rem; }
+  .section-head p{ color: var(--ink-soft); margin-top:0.7rem; }
+  .rule{ border:none; border-top:1px solid var(--line); margin:0; }
+  .stripe{ background: var(--bg-alt); }
+
+  /* ---------- services ---------- */
+  .services{ display:grid; grid-template-columns: repeat(2, 1fr); gap: 1.6rem; }
+  @media (max-width: 760px){ .services{ grid-template-columns:1fr; } }
+  .service-card{
+    background: var(--panel); border:1px solid var(--line); border-radius: 18px;
+    padding: 2rem; display:flex; flex-direction:column; gap:0.9rem;
+    box-shadow: var(--shadow);
+  }
+  .service-card .icon-badge{
+    width:50px; height:50px; border-radius:50%; background: var(--olive-tint);
+    display:flex; align-items:center; justify-content:center; color: var(--olive-deep);
+  }
+  .service-card .icon-badge svg{ width:24px; height:24px; }
+  .service-card h3{ font-size:1.5rem; }
+  .service-card p{ color: var(--ink-soft); font-size:0.95rem; margin:0; }
+  .service-card .tags{ display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.3rem; }
+  .service-card .tags span{
+    font-size:0.72rem; letter-spacing:0.04em; padding:0.32rem 0.7rem; border-radius:999px;
+    background: var(--terracotta-tint); color: var(--terracotta-deep); font-weight:600;
+  }
+  .service-card .btn{ align-self:flex-start; margin-top:0.4rem; }
+
+  /* ---------- dish list ---------- */
+  .dish-list{ display:grid; grid-template-columns: repeat(2, 1fr); column-gap: 2.6rem; }
+  @media (max-width: 760px){ .dish-list{ grid-template-columns: 1fr; } }
+  .dish{ display:flex; gap:1rem; padding: 1.15rem 0; border-bottom:1px solid var(--line); }
+  .dish-num{
+    font-family:'Cormorant Garamond', serif; font-weight:700; font-size:1.5rem;
+    color: var(--terracotta); flex:none; width:2.1rem; line-height:1.3;
+  }
+  .dish h3{ font-size:1.02rem; margin-bottom:0.28rem; }
+  .dish p{ margin:0; color: var(--ink-soft); font-size:0.85rem; }
+
+  /* ---------- menu / combos ---------- */
+  .menu-grid{ display:grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+  @media (max-width: 980px){ .menu-grid{ grid-template-columns: repeat(2,1fr); } }
+  @media (max-width: 560px){ .menu-grid{ grid-template-columns: 1fr; } }
+  .menu-card{
+    position:relative;
+    background: var(--panel); border:1px solid var(--line); border-radius:16px;
+    padding: 1.6rem 1.4rem; display:flex; flex-direction:column; gap:0.55rem;
+  }
+  .menu-card.featured{ border-color: var(--terracotta); box-shadow: var(--shadow); }
+  .badge{
+    position:absolute; top:-11px; left:1.4rem;
+    background: var(--terracotta); color:#fff8f1; font-size:0.68rem; font-weight:700;
+    letter-spacing:0.06em; padding:0.28rem 0.65rem; border-radius:999px; text-transform:uppercase;
+  }
+  .menu-card h3{ font-size:1.28rem; }
+  .menu-card .desc{ color: var(--ink-soft); font-size:0.87rem; min-height:2.6em; }
+  .menu-card .price{ font-family:'Cormorant Garamond', serif; font-size:2.1rem; font-weight:700; color:var(--olive-deep); margin-top:0.2rem; }
+  .menu-card .unit{ font-size:0.78rem; color: var(--ink-soft); font-weight:400; }
+  .menu-card .btn{ margin-top:0.5rem; justify-content:center; width:100%; }
+  .menu-note{ margin-top:1.6rem; font-size:0.83rem; color: var(--ink-soft); text-align:center; }
+
+  /* ---------- how it works ---------- */
+  .steps{ display:grid; grid-template-columns: repeat(3,1fr); gap: 1.8rem; counter-reset: step; }
+  @media (max-width: 760px){ .steps{ grid-template-columns:1fr; } }
+  .step{ position:relative; padding-left: 3.4rem; }
+  .step::before{
+    counter-increment: step; content: counter(step);
+    position:absolute; left:0; top:-0.2rem;
+    width:2.5rem; height:2.5rem; border-radius:50%;
+    background: var(--olive-deep); color: var(--on-olive);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Cormorant Garamond', serif; font-size:1.3rem; font-weight:700;
+  }
+  .step h3{ font-size:1.15rem; margin-bottom:0.35rem; }
+  .step p{ color: var(--ink-soft); font-size:0.92rem; margin:0; }
+
+  /* ---------- why choose ---------- */
+  .why-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:1.4rem; }
+  @media (max-width: 760px){ .why-grid{ grid-template-columns:1fr; } }
+  .why-item{ display:flex; gap:0.9rem; align-items:flex-start; }
+  .why-item .icon-badge{
+    width:44px; height:44px; border-radius:50%; background: var(--terracotta-tint); color: var(--terracotta-deep);
+    display:flex; align-items:center; justify-content:center; flex:none;
+  }
+  .why-item .icon-badge svg{ width:22px; height:22px; }
+  .why-item h3{ font-size:1.05rem; margin-bottom:0.25rem; }
+  .why-item p{ margin:0; color: var(--ink-soft); font-size:0.88rem; }
+
+  /* ---------- chef em casa cta ---------- */
+  .cta-panel{
+    background: var(--olive-deep); color: var(--on-olive);
+    border-radius: 22px; padding: clamp(2.2rem, 5vw, 3.2rem);
+    display:grid; grid-template-columns: 1.3fr 0.8fr; gap:2rem; align-items:center;
+  }
+  @media (max-width: 760px){ .cta-panel{ grid-template-columns:1fr; } }
+  .cta-panel h2{ color: var(--on-olive); font-size: clamp(1.6rem,3vw,2.1rem); }
+  .cta-panel p{ color: color-mix(in srgb, var(--on-olive) 80%, transparent); margin: 0.8rem 0 1.4rem; max-width:48ch; }
+  .cta-panel .btn-solid{ background: var(--terracotta); }
+  .cta-panel .btn-ghost{ border-color: var(--on-olive); color: var(--on-olive); }
+  .cta-panel .btn-ghost:hover{ background: rgba(255,255,255,0.08); }
+
+  /* ---------- cadastro form ---------- */
+  .form-panel{ max-width: 640px; margin: 0 auto; }
+  .form-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 1.1rem 1.4rem; }
+  @media (max-width: 600px){ .form-grid{ grid-template-columns: 1fr; } }
+  .field{ display:flex; flex-direction:column; gap:0.4rem; }
+  .field.full{ grid-column: 1 / -1; }
+  .field label{ font-size:0.82rem; font-weight:600; color: var(--ink-soft); }
+  .field input, .field textarea{
+    font-family:'Poppins', sans-serif; font-size:0.95rem; padding:0.75rem 0.9rem;
+    border:1px solid var(--line); border-radius:10px; background: var(--panel); color: var(--ink);
+  }
+  .field input:focus, .field textarea:focus{ outline:2px solid var(--olive); outline-offset:1px; }
+  .field textarea{ resize:vertical; min-height:96px; }
+  .radio-group{ display:flex; flex-wrap:wrap; gap:0.6rem; }
+  .radio-pill{
+    display:flex; align-items:center; gap:0.45rem; border:1px solid var(--line);
+    border-radius:999px; padding:0.55rem 1rem; font-size:0.85rem; cursor:pointer;
+  }
+  .radio-pill input{ accent-color: var(--terracotta); }
+  .form-note{ font-size:0.8rem; color: var(--ink-soft); margin-top:0.9rem; }
+  .form-status{ font-size:0.88rem; color: var(--olive-deep); font-weight:600; margin-top:0.8rem; min-height:1.3em; }
+
+  /* ---------- footer ---------- */
+  footer{ background: var(--bg-alt); border-top:1px solid var(--line); padding: 3rem 0 1.6rem; }
+  .foot-grid{ display:grid; grid-template-columns: 1.4fr 1fr 1fr; gap:2.2rem; margin-bottom:2.2rem; }
+  @media (max-width: 700px){ .foot-grid{ grid-template-columns:1fr; } }
+  .foot-brand .name{ font-family:'Cormorant Garamond', serif; font-weight:700; font-size:1.5rem; letter-spacing:0.04em; }
+  .foot-brand .tag{ font-family:'Petit Formal Script'; color: var(--terracotta-deep); font-size:1.1rem; }
+  .foot-brand p{ color: var(--ink-soft); font-size:0.88rem; max-width: 32ch; margin-top:0.7rem; }
+  footer h4{ font-size:0.78rem; text-transform:uppercase; letter-spacing:0.12em; color: var(--ink-soft); margin-bottom:0.9rem; }
+  footer ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:0.6rem; }
+  footer a{ text-decoration:none; font-size:0.92rem; display:flex; align-items:center; gap:0.5rem; }
+  footer a:hover{ color: var(--terracotta-deep); }
+  footer svg{ width:16px; height:16px; color:var(--olive); flex:none; }
+  .foot-bottom{
+    border-top:1px solid var(--line); padding-top:1.4rem; display:flex; justify-content:space-between;
+    flex-wrap:wrap; gap:0.6rem; font-size:0.78rem; color: var(--ink-soft);
+  }
+
+  /* ---------- floating whatsapp ---------- */
+  .float-wa{
+    position: fixed; bottom: 1.4rem; right: 1.4rem; z-index:50;
+    width:56px; height:56px; border-radius:50%;
+    background: var(--olive); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: var(--shadow); text-decoration:none;
+    border: 2px solid var(--on-olive);
+  }
+  .float-wa svg{ width:26px; height:26px; }
+  .float-wa:hover{ background: var(--olive-deep); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a class="brandmark" href="#inicio" data-tab="inicio">
+      <svg viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <path d="M20 6c-4 0-6.5 3-6.5 6.5 0 2 1 3.6 1 5-3 0-5.5 2-5.5 5 0 3.2 2.8 5 6 5h10c3.2 0 6-1.8 6-5 0-3-2.5-5-5.5-5 0-1.4 1-3 1-5C26.5 9 24 6 20 6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="M14 31.5h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <span class="brandmark-text">
+        <div class="name">Carolina Cocina</div>
+        <div class="tag">personal chef</div>
+      </span>
+    </a>
+    <nav class="links" id="navLinks">
+      <a href="#inicio" data-tab="inicio" class="active">Início</a>
+      <a href="#cardapio" data-tab="cardapio">Cardápio</a>
+      <a href="#cadastro" data-tab="cadastro">Cadastro</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-solid" href="https://wa.me/5521984616790?text=Olá, Carolina! Vim pelo site e quero saber mais sobre as marmitas fitness." target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.02 2C6.5 2 2.02 6.48 2.02 12c0 1.9.53 3.68 1.44 5.2L2 22l4.94-1.4A9.94 9.94 0 0 0 12.02 22C17.55 22 22 17.52 22 12S17.55 2 12.02 2zm0 18.1c-1.7 0-3.28-.5-4.6-1.36l-.33-.2-2.94.83.85-2.86-.22-.33A8.06 8.06 0 0 1 3.94 12c0-4.46 3.63-8.08 8.08-8.08 4.46 0 8.08 3.62 8.08 8.08 0 4.45-3.62 8.1-8.08 8.1zm4.42-6.06c-.24-.12-1.43-.7-1.65-.79-.22-.08-.38-.12-.55.12-.16.24-.62.79-.77.95-.14.16-.28.18-.52.06-.24-.12-1-.37-1.92-1.18-.7-.63-1.18-1.4-1.32-1.64-.14-.24-.02-.37.1-.5.11-.1.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.55-1.33-.76-1.82-.2-.48-.4-.42-.55-.42h-.47c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.7 2.6 4.13 3.64.58.25 1.03.4 1.38.5.58.19 1.11.16 1.53.1.47-.07 1.43-.58 1.63-1.15.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28z"/></svg>
+        <span class="btn-label">Pedir no WhatsApp</span>
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- ============ INÍCIO ============ -->
+  <div class="tab-panel" id="inicio" data-panel="inicio">
+
+    <!-- HERO -->
+    <div class="hero-outer">
+      <div class="wrap">
+        <div class="framed">
+          <div class="corner corner-tl"><svg viewBox="0 0 34 34"><path d="M2 2v14M2 2h14" stroke="var(--olive)" stroke-width="1.4" fill="none"/><circle cx="2" cy="2" r="2.4" fill="var(--terracotta)"/><path d="M2 20c6 0 9-4 9-9" stroke="var(--olive)" stroke-width="1.2" fill="none" opacity="0.6"/></svg></div>
+          <div class="corner corner-tr"><svg viewBox="0 0 34 34"><path d="M2 2v14M2 2h14" stroke="var(--olive)" stroke-width="1.4" fill="none"/><circle cx="2" cy="2" r="2.4" fill="var(--terracotta)"/><path d="M2 20c6 0 9-4 9-9" stroke="var(--olive)" stroke-width="1.2" fill="none" opacity="0.6"/></svg></div>
+          <div class="corner corner-bl"><svg viewBox="0 0 34 34"><path d="M2 2v14M2 2h14" stroke="var(--olive)" stroke-width="1.4" fill="none"/><circle cx="2" cy="2" r="2.4" fill="var(--terracotta)"/><path d="M2 20c6 0 9-4 9-9" stroke="var(--olive)" stroke-width="1.2" fill="none" opacity="0.6"/></svg></div>
+          <div class="corner corner-br"><svg viewBox="0 0 34 34"><path d="M2 2v14M2 2h14" stroke="var(--olive)" stroke-width="1.4" fill="none"/><circle cx="2" cy="2" r="2.4" fill="var(--terracotta)"/><path d="M2 20c6 0 9-4 9-9" stroke="var(--olive)" stroke-width="1.2" fill="none" opacity="0.6"/></svg></div>
+
+          <div class="hero">
+            <div>
+              <p class="eyebrow">Teresópolis · RJ</p>
+              <h1>Marmitas fitness e jantares assinados por <em>Carolina</em>, feitos à mão.</h1>
+              <p class="lede">Uma cozinha pessoal para o seu dia a dia e para as suas ocasiões especiais — kits fitness prontos para a semana e experiências de chef particular direto na sua casa.</p>
+              <div class="hero-ctas">
+                <a class="btn btn-solid" href="#cardapio" data-tab="cardapio">Ver cardápio da semana</a>
+                <a class="btn btn-ghost" href="https://wa.me/5521984616790?text=Olá, Carolina! Vim pelo site e quero fazer um pedido." target="_blank" rel="noopener">Falar no WhatsApp</a>
+                <a class="text-link" href="#cadastro" data-tab="cadastro">ou preencha seu cadastro →</a>
+              </div>
+              <div class="hero-meta">
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-6.1-7-11a7 7 0 1 1 14 0c0 4.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>Teresópolis, RJ</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke-linecap="round"/></svg>Encomendas sob agenda</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 21c1-4 4-6 8-6s7 2 8 6" stroke-linecap="round"/><circle cx="12" cy="8" r="4"/></svg>@personalchef.carolina</span>
+              </div>
+            </div>
+
+            <div class="plate-wrap" aria-hidden="true">
+              <svg viewBox="0 0 300 300">
+                <circle cx="150" cy="160" r="108" fill="none" stroke="var(--olive)" stroke-width="1.6" opacity="0.7"/>
+                <circle cx="150" cy="160" r="78" fill="var(--panel)" stroke="var(--line)" stroke-width="1.4"/>
+                <circle cx="128" cy="150" r="9" fill="var(--terracotta-tint)"/>
+                <circle cx="162" cy="145" r="12" fill="var(--terracotta-tint)"/>
+                <circle cx="150" cy="178" r="10" fill="var(--terracotta-tint)"/>
+                <circle cx="120" cy="175" r="6" fill="var(--terracotta)"/>
+                <circle cx="175" cy="168" r="5" fill="var(--terracotta)"/>
+                <g class="steam-line"><path d="M112 62c-6 8 8 12 2 22" fill="none" stroke="var(--terracotta)" stroke-width="2" stroke-linecap="round"/></g>
+                <g class="steam-line"><path d="M150 52c-6 8 8 12 2 22" fill="none" stroke="var(--terracotta)" stroke-width="2" stroke-linecap="round"/></g>
+                <g class="steam-line"><path d="M188 62c-6 8 8 12 2 22" fill="none" stroke="var(--terracotta)" stroke-width="2" stroke-linecap="round"/></g>
+                <g transform="translate(150,268)">
+                  <line x1="-46" y1="0" x2="-46" y2="-22" stroke="var(--olive)" stroke-width="1.6" stroke-linecap="round"/>
+                  <path d="M-52 -22 v-8 M-46 -22 v-10 M-40 -22 v-8" stroke="var(--olive)" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+                  <path d="M46 0 v-30 c0 -6 6 -6 6 -14 c0 -5 -6 -6 -6 -1" fill="none" stroke="var(--olive)" stroke-width="1.6" stroke-linecap="round"/>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SERVICES -->
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">O que Carolina cozinha para você</p>
+          <h2>Duas formas de comer melhor, sem perder tempo na cozinha</h2>
+        </div>
+        <div class="services">
+          <div class="service-card">
+            <div class="icon-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 10h16M10 4v16" stroke-linecap="round"/></svg>
+            </div>
+            <h3>Marmita Fitness</h3>
+            <p>Refeições balanceadas, montadas em porções individuais e congeladas no ponto certo — é só esquentar. Ideal para quem treina, trabalha fora ou quer manter a rotina alimentar em dia.</p>
+            <div class="tags"><span>Kits semanais</span><span>Retirada ou entrega</span><span>Congelado</span></div>
+            <a class="btn btn-ghost" href="#cardapio" data-tab="cardapio">Ver kits e preços</a>
+          </div>
+          <div class="service-card">
+            <div class="icon-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 4c-2.4 0-4 1.8-4 3.9 0 1.2.6 2.2.6 3-1.8 0-3.3 1.2-3.3 3 0 1.9 1.7 3 3.6 3h6.2c1.9 0 3.6-1.1 3.6-3 0-1.8-1.5-3-3.3-3 0-.8.6-1.8.6-3C16 5.8 14.4 4 12 4z"/><path d="M8.5 16.8V19M15.5 16.8V19M6 19h12" stroke-linecap="round"/></svg>
+            </div>
+            <h3>Chef em Casa</h3>
+            <p>Carolina leva os ingredientes e cozinha na sua cozinha: menu autoral para jantares a dois, aniversários ou confraternizações — sem você se preocupar com compras ou louça.</p>
+            <div class="tags"><span>Menu personalizado</span><span>Eventos pequenos</span><span>Sob orçamento</span></div>
+            <a class="btn btn-ghost" href="#chef-em-casa">Como funciona</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMO FUNCIONA -->
+    <section class="stripe" id="como-funciona">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Como funciona</p>
+          <h2>Do pedido à sua mesa, em três passos</h2>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <h3>Escolha seu kit</h3>
+            <p>Fale com a Carolina no WhatsApp, cadastre-se ou escolha direto no cardápio o kit de marmitas que combina com sua semana.</p>
+          </div>
+          <div class="step">
+            <h3>Preparo com carinho</h3>
+            <p>Ingredientes frescos, selecionados e preparados na hora — sem conservantes, sem pressa.</p>
+          </div>
+          <div class="step">
+            <h3>Retirada ou entrega</h3>
+            <p>Combine o melhor horário para retirar em Teresópolis ou receber no conforto de casa.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHY -->
+    <section>
+      <div class="wrap">
+        <div class="why-grid">
+          <div class="why-item">
+            <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3c4 3 7 6 7 10a7 7 0 1 1-14 0c0-4 3-7 7-10z"/></svg></div>
+            <div><h3>Ingredientes frescos</h3><p>Compras de estação, escolhidas à mão, sem industrializados.</p></div>
+          </div>
+          <div class="why-item">
+            <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke-linecap="round"/></svg></div>
+            <div><h3>Agenda flexível</h3><p>Kits semanais ou eventos pontuais, combinados direto com Carolina.</p></div>
+          </div>
+          <div class="why-item">
+            <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3" stroke-linecap="round"/></svg></div>
+            <div><h3>Pronto em minutos</h3><p>Marmitas prontas para esquentar quando o dia não dá tempo de cozinhar.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHEF EM CASA -->
+    <section class="stripe" id="chef-em-casa">
+      <div class="wrap">
+        <div class="cta-panel">
+          <div>
+            <p class="eyebrow" style="color: var(--terracotta-tint)">Chef em casa</p>
+            <h2>Um jantar assinado, cozinhado na sua própria cozinha</h2>
+            <p>Para datas especiais — aniversários, jantares a dois, confraternizações — Carolina cria um menu sob medida, leva os ingredientes e cozinha na sua casa. Você recebe seus convidados, ela cuida do resto.</p>
+            <div style="display:flex; flex-wrap:wrap; gap:0.9rem;">
+              <a class="btn btn-solid" href="https://wa.me/5521984616790?text=Olá, Carolina! Gostaria de solicitar um orçamento para um jantar com Chef em Casa." target="_blank" rel="noopener">Solicitar orçamento</a>
+              <a class="btn btn-ghost" href="https://instagram.com/personalchef.carolina" target="_blank" rel="noopener">Ver no Instagram</a>
+            </div>
+          </div>
+          <div class="plate-wrap" aria-hidden="true">
+            <svg viewBox="0 0 220 220">
+              <circle cx="110" cy="110" r="70" fill="none" stroke="var(--terracotta-tint)" stroke-width="1.4"/>
+              <circle cx="110" cy="110" r="48" fill="none" stroke="var(--terracotta-tint)" stroke-width="1.2"/>
+              <path d="M78 60c14-10 30-10 44 0M78 160c14 10 30 10 44 0" stroke="var(--terracotta-tint)" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+              <path d="M60 78c-10 14-10 30 0 44M160 78c10 14 10 30 0 44" stroke="var(--terracotta-tint)" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTATO -->
+    <section id="contato">
+      <div class="wrap">
+        <div class="framed" style="text-align:center;">
+          <div class="corner corner-tl"><svg viewBox="0 0 34 34"><path d="M2 2v14M2 2h14" stroke="var(--olive)" stroke-width="1.4" fill="none"/><circle cx="2" cy="2" r="2.4" fill="var(--terracotta)"/></svg></div>
+          <div class="corner corner-tr"><svg viewBox="0 0 34 34"><path d="M2 2v14M2 2h14" stroke="var(--olive)" stroke-width="1.4" fill="none"/><circle cx="2" cy="2" r="2.4" fill="var(--terracotta)"/></svg></div>
+          <div class="corner corner-bl"><svg viewBox="0 0 34 34"><path d="M2 2v14M2 2h14" stroke="var(--olive)" stroke-width="1.4" fill="none"/><circle cx="2" cy="2" r="2.4" fill="var(--terracotta)"/></svg></div>
+          <div class="corner corner-br"><svg viewBox="0 0 34 34"><path d="M2 2v14M2 2h14" stroke="var(--olive)" stroke-width="1.4" fill="none"/><circle cx="2" cy="2" r="2.4" fill="var(--terracotta)"/></svg></div>
+          <p class="eyebrow">Fale com a Carolina</p>
+          <h2 style="margin-bottom:0.9rem;">Pronta para tirar o jantar da sua cabeça?</h2>
+          <p style="color:var(--ink-soft); max-width:50ch; margin:0 auto 1.6rem;">Chama no WhatsApp para montar seu kit da semana ou pedir um orçamento para o seu evento.</p>
+          <div style="display:flex; justify-content:center; flex-wrap:wrap; gap:0.9rem;">
+            <a class="btn btn-solid" href="https://wa.me/5521984616790" target="_blank" rel="noopener">21 98461-6790</a>
+            <a class="btn btn-ghost" href="https://instagram.com/personalchef.carolina" target="_blank" rel="noopener">@personalchef.carolina</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ CARDÁPIO ============ -->
+  <div class="tab-panel" id="cardapio" data-panel="cardapio" hidden>
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Cardápio da semana</p>
+          <h2>17 opções de refeições</h2>
+          <p>Cada kit de marmitas é montado com uma seleção variada entre estas opções — conte pra Carolina se tem algum favorito ou restrição.</p>
+        </div>
+        <div class="dish-list">
+          <div class="dish"><span class="dish-num">01</span><div><h3>Arroz, Feijão, Legumes Assados e Carne Moída</h3><p>Arroz branco ou integral, feijão, legumes assados e carne moída refogada.</p></div></div>
+          <div class="dish"><span class="dish-num">02</span><div><h3>Arroz, Músculo Cozido, Batata e Vagem</h3><p>Arroz branco ou integral, músculo bovino cozido lentamente, acompanhado de batatas e vagem.</p></div></div>
+          <div class="dish"><span class="dish-num">03</span><div><h3>Arroz, Iscas de Carne e Purê de Abóbora</h3><p>Arroz branco ou integral, iscas de carne e purê cremoso de abóbora.</p></div></div>
+          <div class="dish"><span class="dish-num">04</span><div><h3>Arroz, Iscas de Frango Aceboladas e Purê de Abóbora</h3><p>Arroz branco ou integral, iscas de frango aceboladas e purê cremoso de abóbora.</p></div></div>
+          <div class="dish"><span class="dish-num">05</span><div><h3>Arroz, Carne Moída e Purê de Batata</h3><p>Arroz branco ou integral, carne moída refogada e purê de batata inglesa.</p></div></div>
+          <div class="dish"><span class="dish-num">06</span><div><h3>Arroz, Frango Desfiado e Purê de Batata</h3><p>Arroz branco ou integral, frango desfiado temperado e purê de batata inglesa.</p></div></div>
+          <div class="dish"><span class="dish-num">07</span><div><h3>Arroz, Strogonoff de Carne e Batata Assada</h3><p>Arroz branco ou integral, strogonoff de carne e batatas assadas.</p></div></div>
+          <div class="dish"><span class="dish-num">08</span><div><h3>Arroz, Strogonoff de Frango e Batata Assada</h3><p>Arroz branco ou integral, strogonoff de frango e batatas assadas.</p></div></div>
+          <div class="dish"><span class="dish-num">09</span><div><h3>Panqueca Integral de Carne com Molho de Tomate e Muçarela</h3><p>Panqueca integral recheada com carne moída, molho de tomate caseiro e muçarela.</p></div></div>
+          <div class="dish"><span class="dish-num">10</span><div><h3>Panqueca Integral de Frango com Molho de Tomate e Muçarela</h3><p>Panqueca integral recheada com frango, molho de tomate caseiro e muçarela.</p></div></div>
+          <div class="dish"><span class="dish-num">11</span><div><h3>Arroz com Brócolis, Almôndegas e Cenoura Grelhada</h3><p>Arroz branco ou integral com brócolis, almôndegas caseiras e cenoura grelhada.</p></div></div>
+          <div class="dish"><span class="dish-num">12</span><div><h3>Arroz, Almôndegas e Batata Rústica</h3><p>Arroz branco ou integral, almôndegas caseiras e batatas rústicas assadas.</p></div></div>
+          <div class="dish"><span class="dish-num">13</span><div><h3>Arroz, Feijão, Legumes Assados e Sobrecoxa Assada</h3><p>Arroz branco ou integral, feijão, legumes assados e sobrecoxa de frango assada.</p></div></div>
+          <div class="dish"><span class="dish-num">14</span><div><h3>Arroz, Frango ao Creme de Milho e Mix de Legumes</h3><p>Arroz branco ou integral, peito de frango ao creme de milho e mix de legumes.</p></div></div>
+          <div class="dish"><span class="dish-num">15</span><div><h3>Arroz, Feijão, Lombo Suíno e Couve-Mineira</h3><p>Arroz branco ou integral, feijão, lombo suíno assado e couve-mineira refogada.</p></div></div>
+          <div class="dish"><span class="dish-num">16</span><div><h3>Escondidinho de Carne Moída</h3><p>Escondidinho de carne moída com purê de batata-baroa ou batata inglesa.</p></div></div>
+          <div class="dish"><span class="dish-num">17</span><div><h3>Escondidinho de Frango</h3><p>Escondidinho de frango desfiado com purê de batata-baroa ou batata inglesa.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="stripe">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Monte seu kit</p>
+          <h2>Kits de marmita fitness</h2>
+          <p>Escolha pela quantidade — quanto maior o kit, menor o valor por marmita.</p>
+        </div>
+
+        <div class="menu-grid">
+          <div class="menu-card">
+            <h3>Kit 5 marmitas</h3>
+            <p class="desc">Uma semana enxuta, sem repetir prato. 300g por porção.</p>
+            <div class="price">R$ 95<span class="unit"> · R$19/un</span></div>
+            <a class="btn btn-solid" href="https://wa.me/5521984616790?text=Olá, Carolina! Quero pedir o Kit 5 marmitas fitness." target="_blank" rel="noopener">Pedir no WhatsApp</a>
+          </div>
+          <div class="menu-card featured">
+            <span class="badge">Recomendado</span>
+            <h3>Kit 10 marmitas</h3>
+            <p class="desc">Almoço e jantar cobertos de segunda a sexta.</p>
+            <div class="price">R$ 180<span class="unit"> · R$18/un</span></div>
+            <a class="btn btn-solid" href="https://wa.me/5521984616790?text=Olá, Carolina! Quero pedir o Kit 10 marmitas fitness." target="_blank" rel="noopener">Pedir no WhatsApp</a>
+          </div>
+          <div class="menu-card">
+            <h3>Kit 20 marmitas</h3>
+            <p class="desc">Duas semanas resolvidas, sem pensar duas vezes.</p>
+            <div class="price">R$ 340<span class="unit"> · R$17/un</span></div>
+            <a class="btn btn-solid" href="https://wa.me/5521984616790?text=Olá, Carolina! Quero pedir o Kit 20 marmitas fitness." target="_blank" rel="noopener">Pedir no WhatsApp</a>
+          </div>
+          <div class="menu-card">
+            <h3>Kit Caldos Detox</h3>
+            <p class="desc">5 caldos leves e nutritivos, perfeitos para o jantar.</p>
+            <div class="price">R$ 75</div>
+            <a class="btn btn-solid" href="https://wa.me/5521984616790?text=Olá, Carolina! Quero pedir o Kit de Caldos Detox." target="_blank" rel="noopener">Pedir no WhatsApp</a>
+          </div>
+        </div>
+        <p class="menu-note">Cardápio varia semanalmente conforme ingredientes da estação. Valores de referência — confirme sabores e disponibilidade no WhatsApp.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ CADASTRO ============ -->
+  <div class="tab-panel" id="cadastro" data-panel="cadastro" hidden>
+    <section>
+      <div class="wrap">
+        <div class="framed form-panel">
+          <div class="corner corner-tl"><svg viewBox="0 0 34 34"><path d="M2 2v14M2 2h14" stroke="var(--olive)" stroke-width="1.4" fill="none"/><circle cx="2" cy="2" r="2.4" fill="var(--terracotta)"/></svg></div>
+          <div class="corner corner-tr"><svg viewBox="0 0 34 34"><path d="M2 2v14M2 2h14" stroke="var(--olive)" stroke-width="1.4" fill="none"/><circle cx="2" cy="2" r="2.4" fill="var(--terracotta)"/></svg></div>
+          <div class="corner corner-bl"><svg viewBox="0 0 34 34"><path d="M2 2v14M2 2h14" stroke="var(--olive)" stroke-width="1.4" fill="none"/><circle cx="2" cy="2" r="2.4" fill="var(--terracotta)"/></svg></div>
+          <div class="corner corner-br"><svg viewBox="0 0 34 34"><path d="M2 2v14M2 2h14" stroke="var(--olive)" stroke-width="1.4" fill="none"/><circle cx="2" cy="2" r="2.4" fill="var(--terracotta)"/></svg></div>
+
+          <p class="eyebrow">Cadastre-se</p>
+          <h2 style="margin-bottom:0.6rem;">Conte pra Carolina o que você precisa</h2>
+          <p style="color:var(--ink-soft); margin-bottom:1.8rem;">Preencha seus dados e escolha o que te interessa — ao enviar, o formulário abre uma conversa no WhatsApp da Carolina já com tudo preenchido.</p>
+
+          <form class="form-grid" id="cadastroForm" novalidate>
+            <div class="field">
+              <label for="f-nome">Nome completo</label>
+              <input id="f-nome" name="nome" type="text" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label for="f-whats">WhatsApp</label>
+              <input id="f-whats" name="whats" type="tel" autocomplete="tel" placeholder="(21) 9XXXX-XXXX" required>
+            </div>
+            <div class="field full">
+              <label for="f-bairro">Bairro em Teresópolis</label>
+              <input id="f-bairro" name="bairro" type="text" autocomplete="address-level3">
+            </div>
+            <div class="field full">
+              <label>Tenho interesse em</label>
+              <div class="radio-group">
+                <label class="radio-pill"><input type="radio" name="interesse" value="Marmita Fitness" checked>Marmita Fitness</label>
+                <label class="radio-pill"><input type="radio" name="interesse" value="Chef em Casa">Chef em Casa</label>
+                <label class="radio-pill"><input type="radio" name="interesse" value="Ambos">Ambos</label>
+              </div>
+            </div>
+            <div class="field full">
+              <label for="f-obs">Restrições alimentares ou observações</label>
+              <textarea id="f-obs" name="obs" placeholder="Ex.: sem lactose, alergia a amendoim, prefiro sem carne vermelha..."></textarea>
+            </div>
+            <div class="field full">
+              <button type="submit" class="btn btn-solid" style="justify-content:center; width:100%;">Enviar cadastro no WhatsApp</button>
+              <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+              <p class="form-note">Nada fica salvo neste site — o botão só abre o WhatsApp da Carolina com seus dados prontos para enviar.</p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <div class="name">Carolina Cocina</div>
+        <div class="tag">personal chef</div>
+        <p>Marmitas fitness e jantares assinados, feitos à mão em Teresópolis, RJ.</p>
+      </div>
+      <div>
+        <h4>Contato</h4>
+        <ul>
+          <li><a href="https://wa.me/5521984616790" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.02 2C6.5 2 2.02 6.48 2.02 12c0 1.9.53 3.68 1.44 5.2L2 22l4.94-1.4A9.94 9.94 0 0 0 12.02 22C17.55 22 22 17.52 22 12S17.55 2 12.02 2z"/></svg>21 98461-6790</a></li>
+          <li><a href="https://instagram.com/personalchef.carolina" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>@personalchef.carolina</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Atendimento</h4>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-6.1-7-11a7 7 0 1 1 14 0c0 4.9-7 11-7 11z"/></svg>Teresópolis, RJ</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3" stroke-linecap="round"/></svg>Pedidos sob agenda</li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Carolina Cocina — Personal Chef</span>
+      <span>Feito com carinho para Teresópolis</span>
+    </div>
+  </div>
+</footer>
+
+<a class="float-wa" href="https://wa.me/5521984616790?text=Olá, Carolina! Vim pelo site e quero fazer um pedido." target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.02 2C6.5 2 2.02 6.48 2.02 12c0 1.9.53 3.68 1.44 5.2L2 22l4.94-1.4A9.94 9.94 0 0 0 12.02 22C17.55 22 22 17.52 22 12S17.55 2 12.02 2zm0 18.1c-1.7 0-3.28-.5-4.6-1.36l-.33-.2-2.94.83.85-2.86-.22-.33A8.06 8.06 0 0 1 3.94 12c0-4.46 3.63-8.08 8.08-8.08 4.46 0 8.08 3.62 8.08 8.08 0 4.45-3.62 8.1-8.08 8.1z"/></svg>
+</a>
+
+<script>
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  const TAB_NAMES = ['inicio', 'cardapio', 'cadastro'];
+  const panels = document.querySelectorAll('.tab-panel');
+  const tabControls = document.querySelectorAll('[data-tab]');
+
+  function setTab(name, scrollTop){
+    if (!TAB_NAMES.includes(name)) name = 'inicio';
+    panels.forEach(p => { p.hidden = p.dataset.panel !== name; });
+    tabControls.forEach(a => a.classList.toggle('active', a.dataset.tab === name));
+    navLinks.classList.remove('open');
+    navToggle.setAttribute('aria-expanded', 'false');
+    if (scrollTop) window.scrollTo(0, 0);
+  }
+
+  tabControls.forEach(el => el.addEventListener('click', () => setTab(el.dataset.tab, true)));
+
+  window.addEventListener('hashchange', () => {
+    const h = location.hash.slice(1);
+    if (TAB_NAMES.includes(h)) setTab(h, true);
+  });
+
+  setTab(location.hash.slice(1), false);
+
+  const cadastroForm = document.getElementById('cadastroForm');
+  const formStatus = document.getElementById('formStatus');
+  cadastroForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!cadastroForm.reportValidity()) return;
+    const data = new FormData(cadastroForm);
+    const nome = (data.get('nome') || '').trim();
+    const whats = (data.get('whats') || '').trim();
+    const bairro = (data.get('bairro') || '').trim();
+    const interesse = data.get('interesse') || 'Marmita Fitness';
+    const obs = (data.get('obs') || '').trim();
+
+    let msg = 'Olá, Carolina! Quero fazer meu cadastro:\n\n';
+    msg += 'Nome: ' + nome + '\n';
+    msg += 'WhatsApp: ' + whats + '\n';
+    if (bairro) msg += 'Bairro: ' + bairro + '\n';
+    msg += 'Interesse: ' + interesse + '\n';
+    if (obs) msg += 'Observações: ' + obs;
+
+    window.open('https://wa.me/5521984616790?text=' + encodeURIComponent(msg), '_blank', 'noopener');
+    formStatus.textContent = 'Cadastro pronto! Continue o envio no WhatsApp que abriu em outra aba.';
+  });
+</script>
+</body>
+</html>
