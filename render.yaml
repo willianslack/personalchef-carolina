@@ -1,7 +1,21 @@
+databases:
+  - name: carolina-cocina-db
+    plan: starter
+    databaseName: carolina_cocina
+    user: carolina_cocina
+
 services:
   - type: web
     name: carolina-cocina
-    runtime: static
-    buildCommand: ""
-    staticPublishPath: .
-    pullRequestPreviewsEnabled: false
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: carolina-cocina-db
+          property: connectionString
+      - key: ADMIN_USER
+        value: carolina
+      - key: ADMIN_PASSWORD
+        sync: false

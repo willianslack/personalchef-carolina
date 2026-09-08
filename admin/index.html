@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastros — Carolina Cocina</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #f6f1e6;
+    --panel: #fbf8f0;
+    --ink: #2b2a22;
+    --ink-soft: #5c5847;
+    --line: #d9cca9;
+    --olive-deep: #454f2c;
+    --terracotta: #bd6d43;
+    --terracotta-deep: #9c5330;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #1c1a13; --panel: #262218; --ink: #f1ead9; --ink-soft: #c7bda3;
+      --line: #4a4530; --olive-deep: #cdd8a0; --terracotta: #e0966b; --terracotta-deep: #f0b48c;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg: #1c1a13; --panel: #262218; --ink: #f1ead9; --ink-soft: #c7bda3;
+    --line: #4a4530; --olive-deep: #cdd8a0; --terracotta: #e0966b; --terracotta-deep: #f0b48c;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Poppins',sans-serif; padding: clamp(1.25rem,4vw,2.5rem); }
+  h1{ font-family:'Cormorant Garamond',serif; font-size:1.9rem; margin:0 0 0.3rem; }
+  .sub{ color:var(--ink-soft); font-size:0.9rem; margin:0 0 1.6rem; }
+  table{ width:100%; border-collapse:collapse; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  th, td{ text-align:left; padding:0.75rem 1rem; font-size:0.88rem; border-bottom:1px solid var(--line); vertical-align:top; }
+  th{ font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); background: color-mix(in srgb, var(--panel) 80%, var(--ink) 5%); }
+  tr:last-child td{ border-bottom:none; }
+  .pill{ display:inline-block; padding:0.2rem 0.6rem; border-radius:999px; font-size:0.75rem; font-weight:600; background:var(--terracotta); color:#fff8f1; }
+  .empty, .error{ color:var(--ink-soft); font-size:0.9rem; padding:2rem 0; }
+  .error{ color:var(--terracotta-deep); }
+  .wrap-table{ overflow-x:auto; }
+  a.wa{ color:var(--olive-deep); text-decoration:none; }
+  a.wa:hover{ text-decoration:underline; }
+</style>
+</head>
+<body>
+  <h1>Cadastros</h1>
+  <p class="sub">Lista de clientes que se cadastraram pelo site, mais recentes primeiro.</p>
+  <div class="wrap-table">
+    <table id="tbl" hidden>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>WhatsApp</th>
+          <th>Bairro</th>
+          <th>Interesse</th>
+          <th>Observações</th>
+          <th>Data</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <p class="empty" id="empty" hidden>Nenhum cadastro ainda.</p>
+  <p class="error" id="err" hidden>Não foi possível carregar os cadastros.</p>
+
+<script>
+  function esc(s){
+    const d = document.createElement('div');
+    d.textContent = s == null ? '' : String(s);
+    return d.innerHTML;
+  }
+  function fmtDate(iso){
+    try{ return new Date(iso).toLocaleString('pt-BR'); } catch(e){ return iso; }
+  }
+  function waLink(raw){
+    const digits = String(raw || '').replace(/\D/g, '');
+    if (!digits) return '';
+    const withCountry = digits.startsWith('55') ? digits : '55' + digits;
+    return 'https://wa.me/' + withCountry;
+  }
+
+  fetch('/api/cadastros')
+    .then(r => { if (!r.ok) throw new Error('bad status'); return r.json(); })
+    .then(rows => {
+      const tbody = document.getElementById('tbody');
+      const tbl = document.getElementById('tbl');
+      const empty = document.getElementById('empty');
+      if (!rows.length) { empty.hidden = false; return; }
+      tbody.innerHTML = rows.map(r => `
+        <tr>
+          <td>${esc(r.nome)}</td>
+          <td>${waLink(r.whatsapp) ? `<a class="wa" href="${waLink(r.whatsapp)}" target="_blank" rel="noopener">${esc(r.whatsapp)}</a>` : esc(r.whatsapp)}</td>
+          <td>${esc(r.bairro) || '—'}</td>
+          <td><span class="pill">${esc(r.interesse)}</span></td>
+          <td>${esc(r.observacoes) || '—'}</td>
+          <td>${esc(fmtDate(r.created_at))}</td>
+        </tr>
+      `).join('');
+      tbl.hidden = false;
+    })
+    .catch(() => { document.getElementById('err').hidden = false; });
+</script>
+</body>
+</html>

@@ -750,15 +750,34 @@
 
   const cadastroForm = document.getElementById('cadastroForm');
   const formStatus = document.getElementById('formStatus');
-  cadastroForm.addEventListener('submit', (e) => {
+  cadastroForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!cadastroForm.reportValidity()) return;
+
     const data = new FormData(cadastroForm);
     const nome = (data.get('nome') || '').trim();
     const whats = (data.get('whats') || '').trim();
     const bairro = (data.get('bairro') || '').trim();
     const interesse = data.get('interesse') || 'Marmita Fitness';
     const obs = (data.get('obs') || '').trim();
+
+    const submitBtn = cadastroForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    formStatus.textContent = 'Enviando...';
+
+    try {
+      const resp = await fetch('/api/cadastro', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, whats, bairro, interesse, obs })
+      });
+      if (!resp.ok) throw new Error('save failed');
+      formStatus.textContent = 'Cadastro salvo! Abrindo o WhatsApp da Carolina...';
+    } catch (err) {
+      formStatus.textContent = 'Não consegui salvar seu cadastro agora, mas vamos continuar pelo WhatsApp.';
+    } finally {
+      submitBtn.disabled = false;
+    }
 
     let msg = 'Olá, Carolina! Quero fazer meu cadastro:\n\n';
     msg += 'Nome: ' + nome + '\n';
@@ -768,7 +787,6 @@
     if (obs) msg += 'Observações: ' + obs;
 
     window.open('https://wa.me/5521984616790?text=' + encodeURIComponent(msg), '_blank', 'noopener');
-    formStatus.textContent = 'Cadastro pronto! Continue o envio no WhatsApp que abriu em outra aba.';
   });
 </script>
 </body>
