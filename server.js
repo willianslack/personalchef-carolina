@@ -34,7 +34,7 @@ function requireAdmin(req, res, next) {
       return next();
     }
   }
-  res.set('WWW-Authenticate', 'Basic realm="Carolina Cocina Admin"');
+  res.set('WWW-Authenticate', 'Basic realm="Personal Chef Carolina Admin"');
   res.status(401).send('Acesso restrito.');
 }
 
@@ -76,7 +76,7 @@ app.get('/admin', requireAdmin, (req, res) => {
 
 ensureSchema()
   .then(() => {
-    app.listen(port, () => console.log(`Carolina Cocina rodando na porta ${port}`));
+    app.listen(port, () => console.log(`Personal Chef Carolina rodando na porta ${port}`));
   })
   .catch((err) => {
     console.error('Erro ao preparar o banco de dados:', err);

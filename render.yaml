@@ -1,19 +1,19 @@
 databases:
-  - name: carolina-cocina-db
+  - name: personalchef-carolina-db
     plan: starter
-    databaseName: carolina_cocina
-    user: carolina_cocina
+    databaseName: personalchef_carolina
+    user: personalchef_carolina
 
 services:
   - type: web
-    name: carolina-cocina
+    name: personalchef-carolina
     runtime: node
     buildCommand: npm install
     startCommand: npm start
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: carolina-cocina-db
+          name: personalchef-carolina-db
           property: connectionString
       - key: ADMIN_USER
         value: carolina
