@@ -70,6 +70,20 @@ app.get('/api/cadastros', requireAdmin, async (req, res) => {
   }
 });
 
+app.delete('/api/cadastros/:id', requireAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id)) {
+    return res.status(400).json({ error: 'Id inválido.' });
+  }
+  try {
+    await pool.query(`DELETE FROM cadastros WHERE id = $1`, [id]);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('Erro ao excluir cadastro:', err);
+    res.status(500).json({ error: 'Não foi possível excluir o cadastro.' });
+  }
+});
+
 app.get('/admin', requireAdmin, (req, res) => {
   res.sendFile(path.join(__dirname, 'admin', 'index.html'));
 });

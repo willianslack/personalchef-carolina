@@ -42,6 +42,11 @@
   .wrap-table{ overflow-x:auto; }
   a.wa{ color:var(--olive-deep); text-decoration:none; }
   a.wa:hover{ text-decoration:underline; }
+  .del{
+    background:none; border:1px solid var(--line); border-radius:8px; color:var(--ink-soft);
+    font-family:'Poppins',sans-serif; font-size:0.78rem; padding:0.3rem 0.6rem; cursor:pointer;
+  }
+  .del:hover{ border-color:var(--terracotta); color:var(--terracotta-deep); }
 </style>
 </head>
 <body>
@@ -57,6 +62,7 @@
           <th>Interesse</th>
           <th>Observações</th>
           <th>Data</th>
+          <th></th>
         </tr>
       </thead>
       <tbody id="tbody"></tbody>
@@ -89,16 +95,31 @@
       const empty = document.getElementById('empty');
       if (!rows.length) { empty.hidden = false; return; }
       tbody.innerHTML = rows.map(r => `
-        <tr>
+        <tr data-id="${r.id}">
           <td>${esc(r.nome)}</td>
           <td>${waLink(r.whatsapp) ? `<a class="wa" href="${waLink(r.whatsapp)}" target="_blank" rel="noopener">${esc(r.whatsapp)}</a>` : esc(r.whatsapp)}</td>
           <td>${esc(r.bairro) || '—'}</td>
           <td><span class="pill">${esc(r.interesse)}</span></td>
           <td>${esc(r.observacoes) || '—'}</td>
           <td>${esc(fmtDate(r.created_at))}</td>
+          <td><button class="del" data-id="${r.id}">Excluir</button></td>
         </tr>
       `).join('');
       tbl.hidden = false;
+      tbody.addEventListener('click', async (e) => {
+        const btn = e.target.closest('.del');
+        if (!btn) return;
+        if (!confirm('Excluir este cadastro?')) return;
+        btn.disabled = true;
+        try {
+          const resp = await fetch('/api/cadastros/' + btn.dataset.id, { method: 'DELETE' });
+          if (!resp.ok) throw new Error('delete failed');
+          btn.closest('tr').remove();
+        } catch (err) {
+          btn.disabled = false;
+          alert('Não foi possível excluir agora.');
+        }
+      });
     })
     .catch(() => { document.getElementById('err').hidden = false; });
 </script>
