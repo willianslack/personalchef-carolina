@@ -1,6 +1,6 @@
 databases:
   - name: personalchef-carolina-db
-    plan: starter
+    plan: basic-256mb
     databaseName: personalchef_carolina
     user: personalchef_carolina
 
