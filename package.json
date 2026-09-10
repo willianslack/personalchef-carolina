@@ -2,7 +2,7 @@
   "name": "personalchef-carolina",
   "version": "1.0.0",
   "private": true,
-  "description": "Site da Personal Chef Carolina — marmitas fitness e chef em casa, Teresópolis/RJ.",
+  "description": "Site da Personal Chef Carolina — marmitas fitness e cozinha particular, Teresópolis/RJ.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
