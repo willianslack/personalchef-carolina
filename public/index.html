@@ -234,7 +234,13 @@
   .service-card .btn{ align-self:flex-start; margin-top:0.4rem; }
 
   /* ---------- dish list ---------- */
-  .dish-list{ display:grid; grid-template-columns: repeat(2, 1fr); column-gap: 2.6rem; }
+  .menu-subhead{
+    font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--olive-deep); font-family:'Poppins', sans-serif; font-weight: 600;
+    margin: 0 0 0.9rem; padding-top: 1.8rem; border-top: 1px solid var(--line);
+  }
+  h3.menu-subhead:first-of-type{ padding-top: 0; border-top: none; }
+  .dish-list{ display:grid; grid-template-columns: repeat(2, 1fr); column-gap: 2.6rem; margin-bottom: 0.4rem; }
   @media (max-width: 760px){ .dish-list{ grid-template-columns: 1fr; } }
   .dish{ display:flex; gap:1rem; padding: 1.15rem 0; border-bottom:1px solid var(--line); }
   .dish-num{
@@ -568,9 +574,11 @@
       <div class="wrap">
         <div class="section-head">
           <p class="eyebrow">Cardápio</p>
-          <h2>21 opções de refeições</h2>
+          <h2>O que Carolina cozinha</h2>
           <p>Cada kit de marmitas é montado com uma seleção variada entre estas opções — conte pra Carolina se tem algum favorito ou restrição.</p>
         </div>
+
+        <h3 class="menu-subhead">Marmitas</h3>
         <div class="dish-list">
           <div class="dish"><span class="dish-num">01</span><div><h3>Arroz, Feijão, Legumes Assados e Carne Moída</h3><p>Arroz branco ou integral, feijão, legumes assados e carne moída refogada.</p></div></div>
           <div class="dish"><span class="dish-num">02</span><div><h3>Arroz, Músculo Cozido, Batata e Vagem</h3><p>Arroz branco ou integral, músculo bovino cozido lentamente, acompanhado de batatas e vagem.</p></div></div>
@@ -589,10 +597,14 @@
           <div class="dish"><span class="dish-num">15</span><div><h3>Arroz, Feijão, Lombo Suíno e Couve-Mineira</h3><p>Arroz branco ou integral, feijão, lombo suíno assado e couve-mineira refogada.</p></div></div>
           <div class="dish"><span class="dish-num">16</span><div><h3>Escondidinho de Carne Moída</h3><p>Escondidinho de carne moída com purê de batata-baroa ou batata inglesa.</p></div></div>
           <div class="dish"><span class="dish-num">17</span><div><h3>Escondidinho de Frango</h3><p>Escondidinho de frango desfiado com purê de batata-baroa ou batata inglesa.</p></div></div>
-          <div class="dish"><span class="dish-num">18</span><div><h3>Caldo de Abóbora com Carne Moída</h3><p>Caldo cremoso de abóbora com carne moída bem temperada.</p></div></div>
-          <div class="dish"><span class="dish-num">19</span><div><h3>Caldo de Chuchu com Peito de Frango</h3><p>Caldo leve de chuchu com peito de frango desfiado.</p></div></div>
-          <div class="dish"><span class="dish-num">20</span><div><h3>Caldo de Couve-Flor com Alho-Poró</h3><p>Caldo cremoso de couve-flor com alho-poró refogado.</p></div></div>
-          <div class="dish"><span class="dish-num">21</span><div><h3>Caldo de Baroa com Frango</h3><p>Caldo cremoso de batata-baroa com frango.</p></div></div>
+        </div>
+
+        <h3 class="menu-subhead">Caldos</h3>
+        <div class="dish-list">
+          <div class="dish"><span class="dish-num">01</span><div><h3>Caldo de Abóbora com Carne Moída</h3><p>Caldo cremoso de abóbora com carne moída bem temperada.</p></div></div>
+          <div class="dish"><span class="dish-num">02</span><div><h3>Caldo de Chuchu com Peito de Frango</h3><p>Caldo leve de chuchu com peito de frango desfiado.</p></div></div>
+          <div class="dish"><span class="dish-num">03</span><div><h3>Caldo de Couve-Flor com Alho-Poró</h3><p>Caldo cremoso de couve-flor com alho-poró refogado.</p></div></div>
+          <div class="dish"><span class="dish-num">04</span><div><h3>Caldo de Baroa com Frango</h3><p>Caldo cremoso de batata-baroa com frango.</p></div></div>
         </div>
       </div>
     </section>
