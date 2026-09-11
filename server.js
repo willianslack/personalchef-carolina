@@ -23,6 +23,14 @@ async function ensureSchema() {
       created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     );
   `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS ingredientes (
+      id SERIAL PRIMARY KEY,
+      nome TEXT NOT NULL UNIQUE,
+      preco_kg NUMERIC(10,2) NOT NULL,
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    );
+  `);
 }
 
 function requireAdmin(req, res, next) {
@@ -81,6 +89,73 @@ app.delete('/api/cadastros/:id', requireAdmin, async (req, res) => {
   } catch (err) {
     console.error('Erro ao excluir cadastro:', err);
     res.status(500).json({ error: 'Não foi possível excluir o cadastro.' });
+  }
+});
+
+app.get('/api/ingredientes', requireAdmin, async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      `SELECT id, nome, preco_kg, updated_at FROM ingredientes ORDER BY nome ASC`
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error('Erro ao listar ingredientes:', err);
+    res.status(500).json({ error: 'Não foi possível carregar os ingredientes.' });
+  }
+});
+
+app.post('/api/ingredientes', requireAdmin, async (req, res) => {
+  const { nome, precoKg } = req.body || {};
+  const preco = Number(precoKg);
+  if (!nome || !String(nome).trim() || !Number.isFinite(preco) || preco < 0) {
+    return res.status(400).json({ error: 'Nome e preço por kg válidos são obrigatórios.' });
+  }
+  try {
+    const { rows } = await pool.query(
+      `INSERT INTO ingredientes (nome, preco_kg) VALUES ($1, $2)
+       ON CONFLICT (nome) DO UPDATE SET preco_kg = EXCLUDED.preco_kg, updated_at = now()
+       RETURNING id, nome, preco_kg, updated_at`,
+      [String(nome).trim(), preco]
+    );
+    res.status(201).json(rows[0]);
+  } catch (err) {
+    console.error('Erro ao salvar ingrediente:', err);
+    res.status(500).json({ error: 'Não foi possível salvar o ingrediente.' });
+  }
+});
+
+app.put('/api/ingredientes/:id', requireAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  const { nome, precoKg } = req.body || {};
+  const preco = Number(precoKg);
+  if (!Number.isInteger(id) || !nome || !String(nome).trim() || !Number.isFinite(preco) || preco < 0) {
+    return res.status(400).json({ error: 'Nome e preço por kg válidos são obrigatórios.' });
+  }
+  try {
+    const { rows } = await pool.query(
+      `UPDATE ingredientes SET nome = $1, preco_kg = $2, updated_at = now() WHERE id = $3
+       RETURNING id, nome, preco_kg, updated_at`,
+      [String(nome).trim(), preco, id]
+    );
+    if (!rows.length) return res.status(404).json({ error: 'Ingrediente não encontrado.' });
+    res.json(rows[0]);
+  } catch (err) {
+    console.error('Erro ao atualizar ingrediente:', err);
+    res.status(500).json({ error: 'Não foi possível atualizar o ingrediente.' });
+  }
+});
+
+app.delete('/api/ingredientes/:id', requireAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id)) {
+    return res.status(400).json({ error: 'Id inválido.' });
+  }
+  try {
+    await pool.query(`DELETE FROM ingredientes WHERE id = $1`, [id]);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('Erro ao excluir ingrediente:', err);
+    res.status(500).json({ error: 'Não foi possível excluir o ingrediente.' });
   }
 });
 

@@ -35,7 +35,6 @@
   *{ box-sizing:border-box; }
   body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Poppins',sans-serif; padding: clamp(1.25rem,4vw,2.5rem); }
   h1{ font-family:'Cormorant Garamond',serif; font-size:1.9rem; margin:0 0 0.3rem; }
-  h2{ font-family:'Cormorant Garamond',serif; font-size:1.4rem; margin: 0 0 0.2rem; }
   .sub{ color:var(--ink-soft); font-size:0.9rem; margin:0 0 1.6rem; }
   .tabs{ display:flex; gap:0.5rem; margin-bottom:1.8rem; border-bottom:1px solid var(--line); }
   .tab-btn{
@@ -44,7 +43,6 @@
     padding:0.7rem 0.2rem; margin-right:1.6rem; border-bottom:2px solid transparent;
   }
   .tab-btn.active{ color:var(--ink); border-bottom-color:var(--terracotta); }
-  .view{ }
   .view[hidden]{ display:none; }
   table{ width:100%; border-collapse:collapse; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
   th, td{ text-align:left; padding:0.75rem 1rem; font-size:0.88rem; border-bottom:1px solid var(--line); vertical-align:top; }
@@ -56,20 +54,27 @@
   .wrap-table{ overflow-x:auto; }
   a.wa{ color:var(--olive-deep); text-decoration:none; }
   a.wa:hover{ text-decoration:underline; }
-  .del{
+  .del, .save{
     background:none; border:1px solid var(--line); border-radius:8px; color:var(--ink-soft);
     font-family:'Poppins',sans-serif; font-size:0.78rem; padding:0.3rem 0.6rem; cursor:pointer;
+    white-space:nowrap;
   }
   .del:hover{ border-color:var(--terracotta); color:var(--terracotta-deep); }
+  .save{ border-color:var(--olive-deep); color:var(--olive-deep); margin-right:0.4rem; }
+  .save:hover{ background:var(--olive-tint); }
 
-  /* calculadora */
-  .calc-table input{
+  input[type="text"], input[type="number"]{
     width:100%; font-family:'Poppins',sans-serif; font-size:0.88rem;
     border:1px solid var(--line); border-radius:6px; padding:0.4rem 0.5rem;
     background:var(--bg); color:var(--ink);
   }
-  .calc-table td.num{ font-variant-numeric: tabular-nums; }
-  .calc-table input[type="number"]{ text-align:right; }
+  select{
+    width:100%; font-family:'Poppins',sans-serif; font-size:0.85rem;
+    border:1px solid var(--line); border-radius:6px; padding:0.4rem 0.5rem;
+    background:var(--bg); color:var(--ink);
+  }
+  td.num{ font-variant-numeric: tabular-nums; }
+  input[type="number"]{ text-align:right; }
   .add-row{
     margin-top:0.9rem; background:none; border:1px dashed var(--line); border-radius:8px;
     color:var(--olive-deep); font-family:'Poppins',sans-serif; font-weight:600; font-size:0.85rem;
@@ -84,10 +89,16 @@
   .stat .label{ font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); margin-bottom:0.35rem; }
   .stat .value{ font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-weight:700; color:var(--olive-deep); }
   .stat.highlight .value{ color:var(--terracotta-deep); }
-  .rendimento-row{ display:flex; align-items:center; gap:0.7rem; margin-top:1.4rem; font-size:0.9rem; }
-  .rendimento-row input{
-    width:90px; font-family:'Poppins',sans-serif; font-size:0.9rem; text-align:right;
-    border:1px solid var(--line); border-radius:6px; padding:0.4rem 0.5rem; background:var(--panel); color:var(--ink);
+  .inline-field{ display:flex; align-items:center; gap:0.7rem; margin-top:1.4rem; font-size:0.9rem; flex-wrap:wrap; }
+  .inline-field input{ width:90px; }
+  .new-ing-row{ display:flex; gap:0.7rem; margin-top:1rem; align-items:flex-end; flex-wrap:wrap; }
+  .new-ing-row .field{ display:flex; flex-direction:column; gap:0.3rem; }
+  .new-ing-row label{ font-size:0.75rem; color:var(--ink-soft); }
+  .new-ing-row input{ width:220px; }
+  .new-ing-row input[type="number"]{ width:130px; }
+  .new-ing-row button{
+    background:var(--terracotta); color:#fff8f1; border:none; border-radius:8px;
+    padding:0.6rem 1.1rem; font-family:'Poppins',sans-serif; font-weight:600; font-size:0.85rem; cursor:pointer;
   }
 </style>
 </head>
@@ -95,6 +106,7 @@
   <div class="tabs">
     <button class="tab-btn active" data-view="cadastros">Cadastros</button>
     <button class="tab-btn" data-view="calculadora">Calculadora de Custo</button>
+    <button class="tab-btn" data-view="ingredientes">Ingredientes</button>
   </div>
 
   <div class="view" id="view-cadastros">
@@ -122,16 +134,17 @@
 
   <div class="view" id="view-calculadora" hidden>
     <h1>Calculadora de Custo</h1>
-    <p class="sub">Some os ingredientes de uma receita pelo peso usado (gramatura) e descubra quanto custa cada marmita.</p>
+    <p class="sub">Escolha ingredientes da sua lista salva (ou digite um avulso), informe o peso usado e descubra o custo de uma marmita — inclusive uma personalizada, pra saber quanto cobrar.</p>
 
     <div class="wrap-table">
-      <table class="calc-table">
+      <table>
         <thead>
           <tr>
-            <th style="width:38%">Ingrediente</th>
-            <th style="width:18%">Peso usado (g)</th>
-            <th style="width:20%">Preço por kg (R$)</th>
-            <th style="width:18%">Custo (R$)</th>
+            <th style="width:26%">Ingrediente salvo</th>
+            <th style="width:22%">Nome</th>
+            <th style="width:14%">Peso usado (g)</th>
+            <th style="width:16%">Preço por kg (R$)</th>
+            <th style="width:14%">Custo (R$)</th>
             <th></th>
           </tr>
         </thead>
@@ -140,9 +153,11 @@
     </div>
     <button class="add-row" id="addRow">+ Adicionar ingrediente</button>
 
-    <div class="rendimento-row">
-      <label for="rendimento">Essa receita rende quantas marmitas?</label>
-      <input type="number" id="rendimento" min="1" step="1" value="10">
+    <div class="inline-field">
+      <label for="rendimento">Rende quantas marmitas?</label>
+      <input type="number" id="rendimento" min="1" step="1" value="1">
+      <label for="markup">Markup sobre o custo (%)</label>
+      <input type="number" id="markup" min="0" step="1" value="0">
     </div>
 
     <div class="calc-summary">
@@ -158,28 +173,73 @@
         <div class="label">Custo por marmita</div>
         <div class="value" id="statCustoMarmita">R$ 0,00</div>
       </div>
-      <div class="stat">
-        <div class="label">Custo por 100g</div>
-        <div class="value" id="statCusto100g">R$ 0,00</div>
+      <div class="stat highlight">
+        <div class="label">Preço sugerido (com markup)</div>
+        <div class="value" id="statPrecoSugerido">R$ 0,00</div>
       </div>
     </div>
+  </div>
+
+  <div class="view" id="view-ingredientes" hidden>
+    <h1>Ingredientes</h1>
+    <p class="sub">Sua lista de preços — cadastre uma vez, atualize só quando o preço do fornecedor mudar. A calculadora usa essa lista.</p>
+
+    <div class="new-ing-row">
+      <div class="field">
+        <label for="newIngNome">Ingrediente</label>
+        <input type="text" id="newIngNome" placeholder="Ex: Carne moída">
+      </div>
+      <div class="field">
+        <label for="newIngPreco">Preço por kg (R$)</label>
+        <input type="number" id="newIngPreco" min="0" step="0.01" placeholder="0,00">
+      </div>
+      <button id="newIngBtn" type="button">+ Adicionar</button>
+    </div>
+
+    <div class="wrap-table" style="margin-top:1.4rem;">
+      <table id="ingTbl" hidden>
+        <thead>
+          <tr>
+            <th style="width:50%">Nome</th>
+            <th style="width:25%">Preço por kg (R$)</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="ingBody"></tbody>
+      </table>
+    </div>
+    <p class="empty" id="ingEmpty" hidden>Nenhum ingrediente cadastrado ainda.</p>
+    <p class="error" id="ingErr" hidden>Não foi possível carregar os ingredientes.</p>
   </div>
 
 <script>
   // ---------- tabs ----------
   const tabBtns = document.querySelectorAll('.tab-btn');
-  const views = { cadastros: document.getElementById('view-cadastros'), calculadora: document.getElementById('view-calculadora') };
+  const views = {
+    cadastros: document.getElementById('view-cadastros'),
+    calculadora: document.getElementById('view-calculadora'),
+    ingredientes: document.getElementById('view-ingredientes'),
+  };
   tabBtns.forEach(btn => btn.addEventListener('click', () => {
     tabBtns.forEach(b => b.classList.toggle('active', b === btn));
     Object.entries(views).forEach(([key, el]) => { el.hidden = key !== btn.dataset.view; });
+    if (btn.dataset.view === 'ingredientes') loadIngredientes();
+    if (btn.dataset.view === 'calculadora') loadIngredientesForCalc();
   }));
 
-  // ---------- cadastros ----------
   function esc(s){
     const d = document.createElement('div');
     d.textContent = s == null ? '' : String(s);
     return d.innerHTML;
   }
+  function fmtBRL(n){
+    return (n || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+  function fmtGramas(n){
+    return (n || 0).toLocaleString('pt-BR', { maximumFractionDigits: 0 }) + ' g';
+  }
+
+  // ---------- cadastros ----------
   function fmtDate(iso){
     try{ return new Date(iso).toLocaleString('pt-BR'); } catch(e){ return iso; }
   }
@@ -226,34 +286,146 @@
     })
     .catch(() => { document.getElementById('err').hidden = false; });
 
+  // ---------- ingredientes (lista salva) ----------
+  let savedIngredientes = [];
+
+  async function fetchIngredientes(){
+    const resp = await fetch('/api/ingredientes');
+    if (!resp.ok) throw new Error('bad status');
+    return resp.json();
+  }
+
+  async function loadIngredientes(){
+    const tbl = document.getElementById('ingTbl');
+    const body = document.getElementById('ingBody');
+    const empty = document.getElementById('ingEmpty');
+    const err = document.getElementById('ingErr');
+    empty.hidden = true; err.hidden = true;
+    try {
+      savedIngredientes = await fetchIngredientes();
+      if (!savedIngredientes.length) { tbl.hidden = true; empty.hidden = false; return; }
+      body.innerHTML = savedIngredientes.map(ing => `
+        <tr data-id="${ing.id}">
+          <td><input type="text" class="ing-edit-nome" value="${esc(ing.nome)}"></td>
+          <td><input type="number" class="ing-edit-preco" min="0" step="0.01" value="${ing.preco_kg}"></td>
+          <td>
+            <button class="save ing-save">Salvar</button>
+            <button class="del ing-delete">Excluir</button>
+          </td>
+        </tr>
+      `).join('');
+      tbl.hidden = false;
+    } catch (e) {
+      err.hidden = false;
+    }
+  }
+
+  document.getElementById('ingBody').addEventListener('click', async (e) => {
+    const tr = e.target.closest('tr');
+    if (!tr) return;
+    const id = tr.dataset.id;
+    if (e.target.closest('.ing-save')) {
+      const nome = tr.querySelector('.ing-edit-nome').value.trim();
+      const precoKg = parseFloat(tr.querySelector('.ing-edit-preco').value);
+      if (!nome || !Number.isFinite(precoKg)) { alert('Preencha nome e preço válidos.'); return; }
+      try {
+        const resp = await fetch('/api/ingredientes/' + id, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nome, precoKg }),
+        });
+        if (!resp.ok) throw new Error('save failed');
+        await loadIngredientes();
+      } catch (err) {
+        alert('Não foi possível salvar agora.');
+      }
+    }
+    if (e.target.closest('.ing-delete')) {
+      if (!confirm('Excluir este ingrediente da lista?')) return;
+      try {
+        const resp = await fetch('/api/ingredientes/' + id, { method: 'DELETE' });
+        if (!resp.ok) throw new Error('delete failed');
+        await loadIngredientes();
+      } catch (err) {
+        alert('Não foi possível excluir agora.');
+      }
+    }
+  });
+
+  document.getElementById('newIngBtn').addEventListener('click', async () => {
+    const nomeInput = document.getElementById('newIngNome');
+    const precoInput = document.getElementById('newIngPreco');
+    const nome = nomeInput.value.trim();
+    const precoKg = parseFloat(precoInput.value);
+    if (!nome || !Number.isFinite(precoKg)) { alert('Preencha nome e preço válidos.'); return; }
+    try {
+      const resp = await fetch('/api/ingredientes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, precoKg }),
+      });
+      if (!resp.ok) throw new Error('create failed');
+      nomeInput.value = '';
+      precoInput.value = '';
+      await loadIngredientes();
+    } catch (err) {
+      alert('Não foi possível adicionar agora.');
+    }
+  });
+
   // ---------- calculadora de custo ----------
   const calcBody = document.getElementById('calcBody');
   const addRowBtn = document.getElementById('addRow');
   const rendimentoInput = document.getElementById('rendimento');
+  const markupInput = document.getElementById('markup');
   const statPeso = document.getElementById('statPeso');
   const statCustoTotal = document.getElementById('statCustoTotal');
   const statCustoMarmita = document.getElementById('statCustoMarmita');
-  const statCusto100g = document.getElementById('statCusto100g');
+  const statPrecoSugerido = document.getElementById('statPrecoSugerido');
+  let calcLoaded = false;
 
-  function fmtBRL(n){
-    return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  }
-  function fmtGramas(n){
-    return n.toLocaleString('pt-BR', { maximumFractionDigits: 0 }) + ' g';
+  async function loadIngredientesForCalc(){
+    if (calcLoaded) return;
+    try {
+      savedIngredientes = await fetchIngredientes();
+    } catch (e) { /* segue com lista vazia */ }
+    calcBody.querySelectorAll('.ing-select').forEach(fillSelect);
+    calcLoaded = true;
   }
 
-  function addIngredientRow(nome = '', peso = '', precoKg = ''){
+  function fillSelect(select){
+    const current = select.value;
+    select.innerHTML = '<option value="">— avulso (digitar) —</option>' +
+      savedIngredientes.map(ing => `<option value="${ing.id}">${esc(ing.nome)}</option>`).join('');
+    select.value = current || '';
+  }
+
+  function addIngredientRow(){
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td><input type="text" class="ing-nome" placeholder="Ex: Carne moída" value="${esc(nome)}"></td>
-      <td><input type="number" class="ing-peso" min="0" step="1" placeholder="0" value="${esc(peso)}"></td>
-      <td><input type="number" class="ing-preco" min="0" step="0.01" placeholder="0,00" value="${esc(precoKg)}"></td>
+      <td><select class="ing-select"></select></td>
+      <td><input type="text" class="ing-nome" placeholder="Ex: Carne moída"></td>
+      <td><input type="number" class="ing-peso" min="0" step="1" placeholder="0"></td>
+      <td><input type="number" class="ing-preco" min="0" step="0.01" placeholder="0,00"></td>
       <td class="num ing-custo">R$ 0,00</td>
       <td><button class="del ing-remove" type="button">Remover</button></td>
     `;
     calcBody.appendChild(tr);
+    fillSelect(tr.querySelector('.ing-select'));
     recalc();
   }
+
+  calcBody.addEventListener('change', (e) => {
+    if (!e.target.classList.contains('ing-select')) return;
+    const tr = e.target.closest('tr');
+    const id = e.target.value;
+    const ing = savedIngredientes.find(i => String(i.id) === id);
+    if (ing) {
+      tr.querySelector('.ing-nome').value = ing.nome;
+      tr.querySelector('.ing-preco').value = ing.preco_kg;
+      recalc();
+    }
+  });
 
   function recalc(){
     let pesoTotal = 0;
@@ -267,21 +439,24 @@
       custoTotal += custo;
     });
     const rendimento = Math.max(1, parseInt(rendimentoInput.value, 10) || 1);
+    const markup = Math.max(0, parseFloat(markupInput.value) || 0);
+    const custoMarmita = custoTotal / rendimento;
     statPeso.textContent = fmtGramas(pesoTotal);
     statCustoTotal.textContent = fmtBRL(custoTotal);
-    statCustoMarmita.textContent = fmtBRL(custoTotal / rendimento);
-    statCusto100g.textContent = fmtBRL(pesoTotal > 0 ? (custoTotal / pesoTotal) * 100 : 0);
+    statCustoMarmita.textContent = fmtBRL(custoMarmita);
+    statPrecoSugerido.textContent = fmtBRL(custoMarmita * (1 + markup / 100));
   }
 
   calcBody.addEventListener('input', recalc);
   rendimentoInput.addEventListener('input', recalc);
+  markupInput.addEventListener('input', recalc);
   calcBody.addEventListener('click', (e) => {
     const btn = e.target.closest('.ing-remove');
     if (!btn) return;
     btn.closest('tr').remove();
     recalc();
   });
-  addRowBtn.addEventListener('click', () => addIngredientRow());
+  addRowBtn.addEventListener('click', addIngredientRow);
 
   addIngredientRow();
 </script>
