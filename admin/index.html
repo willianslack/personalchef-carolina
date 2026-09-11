@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cadastros — Personal Chef Carolina</title>
+<title>Painel — Personal Chef Carolina</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
@@ -15,23 +15,37 @@
     --ink-soft: #5c5847;
     --line: #d9cca9;
     --olive-deep: #454f2c;
+    --olive-tint: #e3e6d3;
     --terracotta: #bd6d43;
     --terracotta-deep: #9c5330;
+    --terracotta-tint: #f1ded0;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
       --bg: #1c1a13; --panel: #262218; --ink: #f1ead9; --ink-soft: #c7bda3;
-      --line: #4a4530; --olive-deep: #cdd8a0; --terracotta: #e0966b; --terracotta-deep: #f0b48c;
+      --line: #4a4530; --olive-deep: #cdd8a0; --olive-tint: #333723;
+      --terracotta: #e0966b; --terracotta-deep: #f0b48c; --terracotta-tint: #3a2a20;
     }
   }
   :root[data-theme="dark"]{
     --bg: #1c1a13; --panel: #262218; --ink: #f1ead9; --ink-soft: #c7bda3;
-    --line: #4a4530; --olive-deep: #cdd8a0; --terracotta: #e0966b; --terracotta-deep: #f0b48c;
+    --line: #4a4530; --olive-deep: #cdd8a0; --olive-tint: #333723;
+    --terracotta: #e0966b; --terracotta-deep: #f0b48c; --terracotta-tint: #3a2a20;
   }
   *{ box-sizing:border-box; }
   body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Poppins',sans-serif; padding: clamp(1.25rem,4vw,2.5rem); }
   h1{ font-family:'Cormorant Garamond',serif; font-size:1.9rem; margin:0 0 0.3rem; }
+  h2{ font-family:'Cormorant Garamond',serif; font-size:1.4rem; margin: 0 0 0.2rem; }
   .sub{ color:var(--ink-soft); font-size:0.9rem; margin:0 0 1.6rem; }
+  .tabs{ display:flex; gap:0.5rem; margin-bottom:1.8rem; border-bottom:1px solid var(--line); }
+  .tab-btn{
+    background:none; border:none; cursor:pointer; font-family:'Poppins',sans-serif;
+    font-size:0.92rem; font-weight:600; color:var(--ink-soft);
+    padding:0.7rem 0.2rem; margin-right:1.6rem; border-bottom:2px solid transparent;
+  }
+  .tab-btn.active{ color:var(--ink); border-bottom-color:var(--terracotta); }
+  .view{ }
+  .view[hidden]{ display:none; }
   table{ width:100%; border-collapse:collapse; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
   th, td{ text-align:left; padding:0.75rem 1rem; font-size:0.88rem; border-bottom:1px solid var(--line); vertical-align:top; }
   th{ font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); background: color-mix(in srgb, var(--panel) 80%, var(--ink) 5%); }
@@ -47,31 +61,120 @@
     font-family:'Poppins',sans-serif; font-size:0.78rem; padding:0.3rem 0.6rem; cursor:pointer;
   }
   .del:hover{ border-color:var(--terracotta); color:var(--terracotta-deep); }
+
+  /* calculadora */
+  .calc-table input{
+    width:100%; font-family:'Poppins',sans-serif; font-size:0.88rem;
+    border:1px solid var(--line); border-radius:6px; padding:0.4rem 0.5rem;
+    background:var(--bg); color:var(--ink);
+  }
+  .calc-table td.num{ font-variant-numeric: tabular-nums; }
+  .calc-table input[type="number"]{ text-align:right; }
+  .add-row{
+    margin-top:0.9rem; background:none; border:1px dashed var(--line); border-radius:8px;
+    color:var(--olive-deep); font-family:'Poppins',sans-serif; font-weight:600; font-size:0.85rem;
+    padding:0.55rem 1rem; cursor:pointer;
+  }
+  .add-row:hover{ border-color:var(--olive-deep); }
+  .calc-summary{
+    margin-top:1.6rem; display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap:0.9rem;
+  }
+  .stat{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:1rem 1.2rem; }
+  .stat .label{ font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); margin-bottom:0.35rem; }
+  .stat .value{ font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-weight:700; color:var(--olive-deep); }
+  .stat.highlight .value{ color:var(--terracotta-deep); }
+  .rendimento-row{ display:flex; align-items:center; gap:0.7rem; margin-top:1.4rem; font-size:0.9rem; }
+  .rendimento-row input{
+    width:90px; font-family:'Poppins',sans-serif; font-size:0.9rem; text-align:right;
+    border:1px solid var(--line); border-radius:6px; padding:0.4rem 0.5rem; background:var(--panel); color:var(--ink);
+  }
 </style>
 </head>
 <body>
-  <h1>Cadastros</h1>
-  <p class="sub">Lista de clientes que se cadastraram pelo site, mais recentes primeiro.</p>
-  <div class="wrap-table">
-    <table id="tbl" hidden>
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>WhatsApp</th>
-          <th>Bairro</th>
-          <th>Interesse</th>
-          <th>Observações</th>
-          <th>Data</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
+  <div class="tabs">
+    <button class="tab-btn active" data-view="cadastros">Cadastros</button>
+    <button class="tab-btn" data-view="calculadora">Calculadora de Custo</button>
   </div>
-  <p class="empty" id="empty" hidden>Nenhum cadastro ainda.</p>
-  <p class="error" id="err" hidden>Não foi possível carregar os cadastros.</p>
+
+  <div class="view" id="view-cadastros">
+    <h1>Cadastros</h1>
+    <p class="sub">Lista de clientes que se cadastraram pelo site, mais recentes primeiro.</p>
+    <div class="wrap-table">
+      <table id="tbl" hidden>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>WhatsApp</th>
+            <th>Bairro</th>
+            <th>Interesse</th>
+            <th>Observações</th>
+            <th>Data</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <p class="empty" id="empty" hidden>Nenhum cadastro ainda.</p>
+    <p class="error" id="err" hidden>Não foi possível carregar os cadastros.</p>
+  </div>
+
+  <div class="view" id="view-calculadora" hidden>
+    <h1>Calculadora de Custo</h1>
+    <p class="sub">Some os ingredientes de uma receita pelo peso usado (gramatura) e descubra quanto custa cada marmita.</p>
+
+    <div class="wrap-table">
+      <table class="calc-table">
+        <thead>
+          <tr>
+            <th style="width:38%">Ingrediente</th>
+            <th style="width:18%">Peso usado (g)</th>
+            <th style="width:20%">Preço por kg (R$)</th>
+            <th style="width:18%">Custo (R$)</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="calcBody"></tbody>
+      </table>
+    </div>
+    <button class="add-row" id="addRow">+ Adicionar ingrediente</button>
+
+    <div class="rendimento-row">
+      <label for="rendimento">Essa receita rende quantas marmitas?</label>
+      <input type="number" id="rendimento" min="1" step="1" value="10">
+    </div>
+
+    <div class="calc-summary">
+      <div class="stat">
+        <div class="label">Peso total</div>
+        <div class="value" id="statPeso">0 g</div>
+      </div>
+      <div class="stat">
+        <div class="label">Custo total da receita</div>
+        <div class="value" id="statCustoTotal">R$ 0,00</div>
+      </div>
+      <div class="stat highlight">
+        <div class="label">Custo por marmita</div>
+        <div class="value" id="statCustoMarmita">R$ 0,00</div>
+      </div>
+      <div class="stat">
+        <div class="label">Custo por 100g</div>
+        <div class="value" id="statCusto100g">R$ 0,00</div>
+      </div>
+    </div>
+  </div>
 
 <script>
+  // ---------- tabs ----------
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const views = { cadastros: document.getElementById('view-cadastros'), calculadora: document.getElementById('view-calculadora') };
+  tabBtns.forEach(btn => btn.addEventListener('click', () => {
+    tabBtns.forEach(b => b.classList.toggle('active', b === btn));
+    Object.entries(views).forEach(([key, el]) => { el.hidden = key !== btn.dataset.view; });
+  }));
+
+  // ---------- cadastros ----------
   function esc(s){
     const d = document.createElement('div');
     d.textContent = s == null ? '' : String(s);
@@ -122,6 +225,65 @@
       });
     })
     .catch(() => { document.getElementById('err').hidden = false; });
+
+  // ---------- calculadora de custo ----------
+  const calcBody = document.getElementById('calcBody');
+  const addRowBtn = document.getElementById('addRow');
+  const rendimentoInput = document.getElementById('rendimento');
+  const statPeso = document.getElementById('statPeso');
+  const statCustoTotal = document.getElementById('statCustoTotal');
+  const statCustoMarmita = document.getElementById('statCustoMarmita');
+  const statCusto100g = document.getElementById('statCusto100g');
+
+  function fmtBRL(n){
+    return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+  function fmtGramas(n){
+    return n.toLocaleString('pt-BR', { maximumFractionDigits: 0 }) + ' g';
+  }
+
+  function addIngredientRow(nome = '', peso = '', precoKg = ''){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="text" class="ing-nome" placeholder="Ex: Carne moída" value="${esc(nome)}"></td>
+      <td><input type="number" class="ing-peso" min="0" step="1" placeholder="0" value="${esc(peso)}"></td>
+      <td><input type="number" class="ing-preco" min="0" step="0.01" placeholder="0,00" value="${esc(precoKg)}"></td>
+      <td class="num ing-custo">R$ 0,00</td>
+      <td><button class="del ing-remove" type="button">Remover</button></td>
+    `;
+    calcBody.appendChild(tr);
+    recalc();
+  }
+
+  function recalc(){
+    let pesoTotal = 0;
+    let custoTotal = 0;
+    calcBody.querySelectorAll('tr').forEach(tr => {
+      const peso = parseFloat(tr.querySelector('.ing-peso').value) || 0;
+      const precoKg = parseFloat(tr.querySelector('.ing-preco').value) || 0;
+      const custo = (peso / 1000) * precoKg;
+      tr.querySelector('.ing-custo').textContent = fmtBRL(custo);
+      pesoTotal += peso;
+      custoTotal += custo;
+    });
+    const rendimento = Math.max(1, parseInt(rendimentoInput.value, 10) || 1);
+    statPeso.textContent = fmtGramas(pesoTotal);
+    statCustoTotal.textContent = fmtBRL(custoTotal);
+    statCustoMarmita.textContent = fmtBRL(custoTotal / rendimento);
+    statCusto100g.textContent = fmtBRL(pesoTotal > 0 ? (custoTotal / pesoTotal) * 100 : 0);
+  }
+
+  calcBody.addEventListener('input', recalc);
+  rendimentoInput.addEventListener('input', recalc);
+  calcBody.addEventListener('click', (e) => {
+    const btn = e.target.closest('.ing-remove');
+    if (!btn) return;
+    btn.closest('tr').remove();
+    recalc();
+  });
+  addRowBtn.addEventListener('click', () => addIngredientRow());
+
+  addIngredientRow();
 </script>
 </body>
 </html>
