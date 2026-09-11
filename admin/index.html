@@ -100,6 +100,12 @@
     background:var(--terracotta); color:#fff8f1; border:none; border-radius:8px;
     padding:0.6rem 1.1rem; font-family:'Poppins',sans-serif; font-weight:600; font-size:0.85rem; cursor:pointer;
   }
+  h2{ font-family:'Cormorant Garamond',serif; font-size:1.4rem; margin: 2.4rem 0 0.2rem; }
+  .pill-caldo{ background:var(--olive-deep); }
+  .detail-cell{ padding:0 !important; background:var(--bg); }
+  .detail-inner{ padding:1rem 1.2rem 1.2rem; border-top:1px dashed var(--line); }
+  .ri-total{ font-size:0.85rem; color:var(--ink-soft); margin-right:0.8rem; }
+  .ri-status{ font-size:0.82rem; color:var(--olive-deep); margin-left:0.6rem; }
 </style>
 </head>
 <body>
@@ -177,6 +183,22 @@
         <div class="label">Preço sugerido (com markup)</div>
         <div class="value" id="statPrecoSugerido">R$ 0,00</div>
       </div>
+    </div>
+
+    <h2>Pratos do cardápio</h2>
+    <p class="sub">Custo de cada prato do site, calculado pela sua lista de ingredientes. Clique em "Editar" pra montar (ou ajustar) a receita — fica salvo.</p>
+    <div class="wrap-table">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:14%">Categoria</th>
+            <th>Prato</th>
+            <th style="width:16%">Custo (R$)</th>
+            <th style="width:10%"></th>
+          </tr>
+        </thead>
+        <tbody id="pratosBody"></tbody>
+      </table>
     </div>
   </div>
 
@@ -382,15 +404,13 @@
   const statCustoTotal = document.getElementById('statCustoTotal');
   const statCustoMarmita = document.getElementById('statCustoMarmita');
   const statPrecoSugerido = document.getElementById('statPrecoSugerido');
-  let calcLoaded = false;
-
   async function loadIngredientesForCalc(){
-    if (calcLoaded) return;
     try {
       savedIngredientes = await fetchIngredientes();
     } catch (e) { /* segue com lista vazia */ }
     calcBody.querySelectorAll('.ing-select').forEach(fillSelect);
-    calcLoaded = true;
+    await loadReceitas();
+    renderPratosTable();
   }
 
   function fillSelect(select){
@@ -459,6 +479,220 @@
   addRowBtn.addEventListener('click', addIngredientRow);
 
   addIngredientRow();
+
+  // ---------- pratos do cardápio ----------
+  const CARDAPIO = [
+    ['Marmita', 'Arroz, Feijão, Legumes Assados e Carne Moída'],
+    ['Marmita', 'Arroz, Músculo Cozido, Batata e Vagem'],
+    ['Marmita', 'Arroz, Iscas de Carne e Purê de Abóbora'],
+    ['Marmita', 'Arroz, Iscas de Frango Aceboladas e Purê de Abóbora'],
+    ['Marmita', 'Arroz, Carne Moída e Purê de Batata'],
+    ['Marmita', 'Arroz, Frango Desfiado e Purê de Batata'],
+    ['Marmita', 'Arroz, Strogonoff de Carne e Batata Assada'],
+    ['Marmita', 'Arroz, Strogonoff de Frango e Batata Assada'],
+    ['Marmita', 'Panqueca Integral de Carne com Molho de Tomate e Muçarela'],
+    ['Marmita', 'Panqueca Integral de Frango com Molho de Tomate e Muçarela'],
+    ['Marmita', 'Arroz com Brócolis, Almôndegas e Cenoura Grelhada'],
+    ['Marmita', 'Arroz, Almôndegas e Batata Rústica'],
+    ['Marmita', 'Arroz, Feijão, Legumes Assados e Sobrecoxa Assada'],
+    ['Marmita', 'Arroz, Frango ao Creme de Milho e Mix de Legumes'],
+    ['Marmita', 'Arroz, Feijão, Lombo Suíno e Couve-Mineira'],
+    ['Marmita', 'Escondidinho de Carne Moída'],
+    ['Marmita', 'Escondidinho de Frango'],
+    ['Caldo', 'Caldo de Abóbora com Carne Moída'],
+    ['Caldo', 'Caldo de Chuchu com Peito de Frango'],
+    ['Caldo', 'Caldo de Couve-Flor com Alho-Poró'],
+    ['Caldo', 'Caldo de Baroa com Frango'],
+  ];
+
+  let receitasByPrato = {};
+  const pratosBody = document.getElementById('pratosBody');
+
+  async function loadReceitas(){
+    try {
+      const rows = await fetch('/api/receitas').then(r => { if (!r.ok) throw new Error('bad'); return r.json(); });
+      receitasByPrato = {};
+      rows.forEach(r => { receitasByPrato[r.prato] = r.itens || []; });
+    } catch (e) {
+      receitasByPrato = {};
+    }
+  }
+
+  function precoAtualDoItem(it){
+    if (it.ingredienteId != null) {
+      const ing = savedIngredientes.find(i => i.id === it.ingredienteId);
+      if (ing) return Number(ing.preco_kg);
+    }
+    return Number(it.precoKg) || 0;
+  }
+
+  function custoDeItens(itens){
+    return (itens || []).reduce((sum, it) => sum + ((Number(it.pesoG) || 0) / 1000) * precoAtualDoItem(it), 0);
+  }
+
+  function renderPratosTable(){
+    pratosBody.innerHTML = CARDAPIO.map(([cat, nome], idx) => {
+      const itens = receitasByPrato[nome] || [];
+      const custo = itens.length ? fmtBRL(custoDeItens(itens)) : '—';
+      const pillClass = cat === 'Caldo' ? 'pill pill-caldo' : 'pill';
+      return `
+        <tr class="prato-row" data-idx="${idx}">
+          <td><span class="${pillClass}">${cat}</span></td>
+          <td>${esc(nome)}</td>
+          <td class="num prato-custo">${custo}</td>
+          <td><button class="save prato-toggle" type="button">Editar</button></td>
+        </tr>
+        <tr class="prato-detail" data-idx="${idx}" hidden><td class="detail-cell" colspan="4"></td></tr>
+      `;
+    }).join('');
+  }
+
+  function fillRiSelect(select){
+    const preselect = select.dataset.preselect || '';
+    select.innerHTML = '<option value="">— avulso (digitar) —</option>' +
+      savedIngredientes.map(ing => `<option value="${ing.id}">${esc(ing.nome)}</option>`).join('');
+    select.value = preselect;
+  }
+
+  function riRowHtml(it){
+    it = it || {};
+    return `
+      <tr>
+        <td><select class="ri-select" data-preselect="${it.ingredienteId != null ? it.ingredienteId : ''}"></select></td>
+        <td><input type="text" class="ri-nome" placeholder="Ex: Carne moída" value="${esc(it.nome || '')}"></td>
+        <td><input type="number" class="ri-peso" min="0" step="1" placeholder="0" value="${it.pesoG || ''}"></td>
+        <td><input type="number" class="ri-preco" min="0" step="0.01" placeholder="0,00" value="${it.precoKg || ''}"></td>
+        <td class="num ri-custo">R$ 0,00</td>
+        <td><button class="del ri-remove" type="button">Remover</button></td>
+      </tr>
+    `;
+  }
+
+  function buildDetailHtml(nome, itens){
+    const rows = (itens.length ? itens : [null]).map(riRowHtml).join('');
+    return `
+      <div class="detail-inner">
+        <div class="wrap-table">
+          <table>
+            <thead><tr>
+              <th style="width:24%">Ingrediente salvo</th><th style="width:22%">Nome</th>
+              <th style="width:14%">Peso (g)</th><th style="width:16%">Preço/kg (R$)</th>
+              <th style="width:14%">Custo (R$)</th><th></th>
+            </tr></thead>
+            <tbody class="ri-body" data-prato="${esc(nome)}">${rows}</tbody>
+          </table>
+        </div>
+        <div style="margin-top:0.9rem;">
+          <button class="add-row ri-add" type="button">+ Adicionar ingrediente</button>
+          <span class="ri-total"></span>
+          <button class="save ri-save" type="button">Salvar receita</button>
+          <span class="ri-status"></span>
+        </div>
+      </div>
+    `;
+  }
+
+  function riRecalc(riBody){
+    let total = 0;
+    riBody.querySelectorAll('tr').forEach(tr => {
+      const peso = parseFloat(tr.querySelector('.ri-peso').value) || 0;
+      const preco = parseFloat(tr.querySelector('.ri-preco').value) || 0;
+      const custo = (peso / 1000) * preco;
+      tr.querySelector('.ri-custo').textContent = fmtBRL(custo);
+      total += custo;
+    });
+    const wrap = riBody.closest('.detail-inner');
+    const totalEl = wrap.querySelector('.ri-total');
+    if (totalEl) totalEl.textContent = 'Custo desta receita: ' + fmtBRL(total);
+  }
+
+  pratosBody.addEventListener('click', (e) => {
+    const toggleBtn = e.target.closest('.prato-toggle');
+    if (toggleBtn) {
+      const idx = toggleBtn.closest('.prato-row').dataset.idx;
+      const detail = pratosBody.querySelector('.prato-detail[data-idx="' + idx + '"]');
+      const cell = detail.querySelector('.detail-cell');
+      if (!cell.dataset.built) {
+        const [, nome] = CARDAPIO[idx];
+        cell.innerHTML = buildDetailHtml(nome, receitasByPrato[nome] || []);
+        cell.querySelectorAll('.ri-select').forEach(fillRiSelect);
+        riRecalc(cell.querySelector('.ri-body'));
+        cell.dataset.built = '1';
+      }
+      detail.hidden = !detail.hidden;
+      toggleBtn.textContent = detail.hidden ? 'Editar' : 'Fechar';
+      return;
+    }
+
+    const addBtn = e.target.closest('.ri-add');
+    if (addBtn) {
+      const riBody = addBtn.closest('.detail-inner').querySelector('.ri-body');
+      riBody.insertAdjacentHTML('beforeend', riRowHtml(null));
+      riBody.querySelectorAll('.ri-select').forEach(sel => { if (!sel.options.length) fillRiSelect(sel); });
+      riRecalc(riBody);
+      return;
+    }
+
+    const removeBtn = e.target.closest('.ri-remove');
+    if (removeBtn) {
+      const riBody = removeBtn.closest('.ri-body');
+      removeBtn.closest('tr').remove();
+      riRecalc(riBody);
+      return;
+    }
+
+    const saveBtn = e.target.closest('.ri-save');
+    if (saveBtn) {
+      const wrap = saveBtn.closest('.detail-inner');
+      const riBody = wrap.querySelector('.ri-body');
+      const prato = riBody.dataset.prato;
+      const itens = Array.from(riBody.querySelectorAll('tr')).map(tr => {
+        const selectVal = tr.querySelector('.ri-select').value;
+        return {
+          ingredienteId: selectVal ? Number(selectVal) : null,
+          nome: tr.querySelector('.ri-nome').value.trim(),
+          pesoG: Number(tr.querySelector('.ri-peso').value) || 0,
+          precoKg: Number(tr.querySelector('.ri-preco').value) || 0,
+        };
+      }).filter(it => it.nome && it.pesoG > 0);
+      const status = wrap.querySelector('.ri-status');
+      saveBtn.disabled = true;
+      fetch('/api/receitas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prato, itens }),
+      })
+        .then(r => { if (!r.ok) throw new Error('save failed'); return r.json(); })
+        .then(saved => {
+          receitasByPrato[prato] = saved.itens || [];
+          const idx = CARDAPIO.findIndex(([, n]) => n === prato);
+          const row = pratosBody.querySelector('.prato-row[data-idx="' + idx + '"] .prato-custo');
+          row.textContent = receitasByPrato[prato].length ? fmtBRL(custoDeItens(receitasByPrato[prato])) : '—';
+          status.textContent = 'Salvo!';
+          setTimeout(() => { status.textContent = ''; }, 2500);
+        })
+        .catch(() => { status.textContent = 'Erro ao salvar.'; })
+        .finally(() => { saveBtn.disabled = false; });
+      return;
+    }
+  });
+
+  pratosBody.addEventListener('input', (e) => {
+    if (e.target.classList.contains('ri-peso') || e.target.classList.contains('ri-preco')) {
+      riRecalc(e.target.closest('.ri-body'));
+    }
+  });
+
+  pratosBody.addEventListener('change', (e) => {
+    if (!e.target.classList.contains('ri-select')) return;
+    const tr = e.target.closest('tr');
+    const ing = savedIngredientes.find(i => String(i.id) === e.target.value);
+    if (ing) {
+      tr.querySelector('.ri-nome').value = ing.nome;
+      tr.querySelector('.ri-preco').value = ing.preco_kg;
+      riRecalc(e.target.closest('.ri-body'));
+    }
+  });
 </script>
 </body>
 </html>

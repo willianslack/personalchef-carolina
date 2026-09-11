@@ -31,6 +31,13 @@ async function ensureSchema() {
       updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
     );
   `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS receitas (
+      prato TEXT PRIMARY KEY,
+      itens JSONB NOT NULL DEFAULT '[]'::jsonb,
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    );
+  `);
 }
 
 function requireAdmin(req, res, next) {
@@ -156,6 +163,45 @@ app.delete('/api/ingredientes/:id', requireAdmin, async (req, res) => {
   } catch (err) {
     console.error('Erro ao excluir ingrediente:', err);
     res.status(500).json({ error: 'Não foi possível excluir o ingrediente.' });
+  }
+});
+
+app.get('/api/receitas', requireAdmin, async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      `SELECT prato, itens, updated_at FROM receitas`
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error('Erro ao listar receitas:', err);
+    res.status(500).json({ error: 'Não foi possível carregar as receitas.' });
+  }
+});
+
+app.post('/api/receitas', requireAdmin, async (req, res) => {
+  const { prato, itens } = req.body || {};
+  if (!prato || !String(prato).trim() || !Array.isArray(itens)) {
+    return res.status(400).json({ error: 'Prato e itens (lista) são obrigatórios.' });
+  }
+  const itensLimpos = itens
+    .map((it) => ({
+      ingredienteId: Number.isInteger(it && it.ingredienteId) ? it.ingredienteId : null,
+      nome: String((it && it.nome) || '').trim(),
+      pesoG: Number(it && it.pesoG) || 0,
+      precoKg: Number(it && it.precoKg) || 0,
+    }))
+    .filter((it) => it.nome && it.pesoG > 0);
+  try {
+    const { rows } = await pool.query(
+      `INSERT INTO receitas (prato, itens) VALUES ($1, $2::jsonb)
+       ON CONFLICT (prato) DO UPDATE SET itens = EXCLUDED.itens, updated_at = now()
+       RETURNING prato, itens, updated_at`,
+      [String(prato).trim(), JSON.stringify(itensLimpos)]
+    );
+    res.status(201).json(rows[0]);
+  } catch (err) {
+    console.error('Erro ao salvar receita:', err);
+    res.status(500).json({ error: 'Não foi possível salvar a receita.' });
   }
 });
 
