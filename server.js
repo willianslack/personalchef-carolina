@@ -205,6 +205,16 @@ app.post('/api/receitas', requireAdmin, async (req, res) => {
   }
 });
 
+app.delete('/api/receitas/:prato', requireAdmin, async (req, res) => {
+  try {
+    await pool.query(`DELETE FROM receitas WHERE prato = $1`, [req.params.prato]);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('Erro ao excluir receita:', err);
+    res.status(500).json({ error: 'Não foi possível excluir a receita.' });
+  }
+});
+
 app.get('/admin', requireAdmin, (req, res) => {
   res.sendFile(path.join(__dirname, 'admin', 'index.html'));
 });
