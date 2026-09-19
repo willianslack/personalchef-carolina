@@ -108,6 +108,15 @@
   .detail-inner{ padding:1rem 1.2rem 1.2rem; border-top:1px dashed var(--line); }
   .ri-total{ font-size:0.85rem; color:var(--ink-soft); margin-right:0.8rem; }
   .ri-status{ font-size:0.82rem; color:var(--olive-deep); margin-left:0.6rem; }
+  .stars{ color:#c99a3a; font-size:0.95rem; letter-spacing:1px; white-space:nowrap; }
+  .pill-pendente{ background: var(--terracotta); }
+  .pill-publicada{ background: var(--olive-deep); }
+  .approve{
+    background:none; border:1px solid var(--olive-deep); border-radius:8px; color:var(--olive-deep);
+    font-family:'Poppins',sans-serif; font-size:0.78rem; padding:0.3rem 0.6rem; cursor:pointer;
+    white-space:nowrap; margin-right:0.4rem;
+  }
+  .approve:hover{ background: var(--olive-tint); }
 </style>
 </head>
 <body>
@@ -115,6 +124,7 @@
     <button class="tab-btn active" data-view="cadastros">Cadastros</button>
     <button class="tab-btn" data-view="calculadora">Calculadora de Custo</button>
     <button class="tab-btn" data-view="ingredientes">Ingredientes</button>
+    <button class="tab-btn" data-view="avaliacoes">Avaliações</button>
   </div>
 
   <div class="view" id="view-cadastros">
@@ -236,6 +246,28 @@
     <p class="error" id="ingErr" hidden>Não foi possível carregar os ingredientes.</p>
   </div>
 
+  <div class="view" id="view-avaliacoes" hidden>
+    <h1>Avaliações</h1>
+    <p class="sub">Avaliações enviadas pelo site. Aprove pra publicar no cardápio público, ou exclua.</p>
+    <div class="wrap-table">
+      <table id="avTbl" hidden>
+        <thead>
+          <tr>
+            <th style="width:10%">Status</th>
+            <th style="width:14%">Nome</th>
+            <th style="width:10%">Nota</th>
+            <th>Comentário</th>
+            <th style="width:12%">Data</th>
+            <th style="width:16%"></th>
+          </tr>
+        </thead>
+        <tbody id="avBody"></tbody>
+      </table>
+    </div>
+    <p class="empty" id="avEmpty" hidden>Nenhuma avaliação ainda.</p>
+    <p class="error" id="avErr" hidden>Não foi possível carregar as avaliações.</p>
+  </div>
+
 <script>
   // ---------- tabs ----------
   const tabBtns = document.querySelectorAll('.tab-btn');
@@ -243,12 +275,14 @@
     cadastros: document.getElementById('view-cadastros'),
     calculadora: document.getElementById('view-calculadora'),
     ingredientes: document.getElementById('view-ingredientes'),
+    avaliacoes: document.getElementById('view-avaliacoes'),
   };
   tabBtns.forEach(btn => btn.addEventListener('click', () => {
     tabBtns.forEach(b => b.classList.toggle('active', b === btn));
     Object.entries(views).forEach(([key, el]) => { el.hidden = key !== btn.dataset.view; });
     if (btn.dataset.view === 'ingredientes') loadIngredientes();
     if (btn.dataset.view === 'calculadora') loadIngredientesForCalc();
+    if (btn.dataset.view === 'avaliacoes') loadAvaliacoes();
   }));
 
   function esc(s){
@@ -693,6 +727,64 @@
       tr.querySelector('.ri-nome').value = ing.nome;
       tr.querySelector('.ri-preco').value = ing.preco_kg;
       riRecalc(e.target.closest('.ri-body'));
+    }
+  });
+
+  // ---------- avaliações ----------
+  function starsHtml(n){
+    return '★★★★★☆☆☆☆☆'.slice(5 - n, 10 - n);
+  }
+
+  async function loadAvaliacoes(){
+    const tbl = document.getElementById('avTbl');
+    const body = document.getElementById('avBody');
+    const empty = document.getElementById('avEmpty');
+    const err = document.getElementById('avErr');
+    empty.hidden = true; err.hidden = true;
+    try {
+      const rows = await fetch('/api/avaliacoes').then(r => { if (!r.ok) throw new Error('bad'); return r.json(); });
+      if (!rows.length) { tbl.hidden = true; empty.hidden = false; return; }
+      body.innerHTML = rows.map(r => `
+        <tr data-id="${r.id}">
+          <td><span class="pill ${r.aprovado ? 'pill-publicada' : 'pill-pendente'}">${r.aprovado ? 'Publicada' : 'Pendente'}</span></td>
+          <td>${esc(r.nome)}</td>
+          <td class="stars">${starsHtml(r.estrelas)}</td>
+          <td>${esc(r.comentario)}</td>
+          <td>${esc(fmtDate(r.created_at))}</td>
+          <td>
+            ${r.aprovado ? '' : '<button class="approve av-approve">Aprovar</button>'}
+            <button class="del av-delete">Excluir</button>
+          </td>
+        </tr>
+      `).join('');
+      tbl.hidden = false;
+    } catch (e) {
+      err.hidden = false;
+    }
+  }
+
+  document.getElementById('avBody').addEventListener('click', async (e) => {
+    const tr = e.target.closest('tr');
+    if (!tr) return;
+    const id = tr.dataset.id;
+    if (e.target.closest('.av-approve')) {
+      try {
+        const resp = await fetch('/api/avaliacoes/' + id + '/aprovar', { method: 'PATCH' });
+        if (!resp.ok) throw new Error('approve failed');
+        await loadAvaliacoes();
+      } catch (err) {
+        alert('Não foi possível aprovar agora.');
+      }
+    }
+    if (e.target.closest('.av-delete')) {
+      if (!confirm('Excluir esta avaliação?')) return;
+      try {
+        const resp = await fetch('/api/avaliacoes/' + id, { method: 'DELETE' });
+        if (!resp.ok) throw new Error('delete failed');
+        await loadAvaliacoes();
+      } catch (err) {
+        alert('Não foi possível excluir agora.');
+      }
     }
   });
 </script>

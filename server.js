@@ -38,6 +38,16 @@ async function ensureSchema() {
       updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
     );
   `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS avaliacoes (
+      id SERIAL PRIMARY KEY,
+      nome TEXT NOT NULL,
+      estrelas INTEGER NOT NULL CHECK (estrelas BETWEEN 1 AND 5),
+      comentario TEXT NOT NULL,
+      aprovado BOOLEAN NOT NULL DEFAULT false,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    );
+  `);
 }
 
 function requireAdmin(req, res, next) {
@@ -212,6 +222,80 @@ app.delete('/api/receitas/:prato', requireAdmin, async (req, res) => {
   } catch (err) {
     console.error('Erro ao excluir receita:', err);
     res.status(500).json({ error: 'Não foi possível excluir a receita.' });
+  }
+});
+
+app.post('/api/avaliacoes', async (req, res) => {
+  const { nome, estrelas, comentario } = req.body || {};
+  const nota = Number(estrelas);
+  if (!nome || !String(nome).trim() || !Number.isInteger(nota) || nota < 1 || nota > 5 || !comentario || !String(comentario).trim()) {
+    return res.status(400).json({ error: 'Nome, avaliação (1 a 5 estrelas) e comentário são obrigatórios.' });
+  }
+  try {
+    await pool.query(
+      `INSERT INTO avaliacoes (nome, estrelas, comentario) VALUES ($1, $2, $3)`,
+      [String(nome).trim(), nota, String(comentario).trim()]
+    );
+    res.status(201).json({ ok: true });
+  } catch (err) {
+    console.error('Erro ao salvar avaliação:', err);
+    res.status(500).json({ error: 'Não foi possível enviar a avaliação.' });
+  }
+});
+
+app.get('/api/avaliacoes/publicas', async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      `SELECT id, nome, estrelas, comentario, created_at FROM avaliacoes WHERE aprovado = true ORDER BY created_at DESC LIMIT 50`
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error('Erro ao listar avaliações públicas:', err);
+    res.status(500).json({ error: 'Não foi possível carregar as avaliações.' });
+  }
+});
+
+app.get('/api/avaliacoes', requireAdmin, async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      `SELECT id, nome, estrelas, comentario, aprovado, created_at FROM avaliacoes ORDER BY aprovado ASC, created_at DESC`
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error('Erro ao listar avaliações:', err);
+    res.status(500).json({ error: 'Não foi possível carregar as avaliações.' });
+  }
+});
+
+app.patch('/api/avaliacoes/:id/aprovar', requireAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id)) {
+    return res.status(400).json({ error: 'Id inválido.' });
+  }
+  try {
+    const { rows } = await pool.query(
+      `UPDATE avaliacoes SET aprovado = true WHERE id = $1 RETURNING id, nome, estrelas, comentario, aprovado, created_at`,
+      [id]
+    );
+    if (!rows.length) return res.status(404).json({ error: 'Avaliação não encontrada.' });
+    res.json(rows[0]);
+  } catch (err) {
+    console.error('Erro ao aprovar avaliação:', err);
+    res.status(500).json({ error: 'Não foi possível aprovar a avaliação.' });
+  }
+});
+
+app.delete('/api/avaliacoes/:id', requireAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id)) {
+    return res.status(400).json({ error: 'Id inválido.' });
+  }
+  try {
+    await pool.query(`DELETE FROM avaliacoes WHERE id = $1`, [id]);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('Erro ao excluir avaliação:', err);
+    res.status(500).json({ error: 'Não foi possível excluir a avaliação.' });
   }
 });
 
